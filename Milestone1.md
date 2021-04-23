@@ -15,9 +15,9 @@ The data is well structured and an excel file can be downloaded for each subcate
 
 ## II/ Problematic
 
-Our goal is twofold. On one hand we want to raise awareness about greenhouse gas emissions through simple yet visually informative data visualization. On the other hand we want to show the impact of the Kyoto Protocol and the Paris Agreement (which are both extensions of the UNFCCC) in reducing GHG emissions in several countries. The Kyoto Protocol entered into force in 2005 and the Paris agreement in 2016.
+Our goal is twofold. On one hand we want to raise awareness about GHG emissions through simple yet visually informative data visualization. On the other hand we want to show the impact of the Kyoto Protocol and the Paris Agreement (which are both extensions of the UNFCCC) in reducing GHG emissions in several countries. The Kyoto Protocol entered into force in 2005 and the Paris agreement in 2016.
 
-By analyzing the data we can see if these two agreements have had an effect on greenhouse gas emissions. Additionally, we can observe which countries have effectively reduced their emissions. For the person looking at our visualization, it is a way to learn more about his or her own country and its success in handling the reduction of greenhouse gas emissions.
+By analyzing the data we can see if these two agreements have had an effect on GHG emissions. Additionally, we can observe which countries have effectively reduced their emissions. For the person looking at our visualization, it is a way to learn more about his or her own country and its success in handling the reduction of GHG emissions.
 
 In terms of visualization, we want to add a geographic perspective by showing information on a clickable map or globe. Also, we want to show the evolution of GHG emissions over time as well as their distribution among several industries in such a way that a user could easily find information relevant to him or her.
 
