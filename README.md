@@ -14,6 +14,8 @@
 
 This is a preliminary milestone to set up goals for our final project and assess the feasibility of our ideas (you will find it [here](Milestone1.md)).
 
+In this (Milestone)(Milestone1.md), you will find information about the followings:
+
 ### Dataset
 
 > Find a dataset (or multiple) that you will explore. Assess the quality of the data it contains and how much preprocessing / data-cleaning it will require before tackling visualization. We recommend using a standard dataset as this course is not about scraping nor data processing.
