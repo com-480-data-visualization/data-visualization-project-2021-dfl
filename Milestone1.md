@@ -27,7 +27,7 @@ To achieve our goal, we plan to display the data in an intuitive manner and prov
 
 ## III/ Exploratory Data Analysis
 
-We have explored our data along two main angles: Data by Gas and Data by Industry. We then analysed this data from different perspectives, such as geographic or evolution over time. We have also explored possible correlations between data points.
+We have explored our data along two main angles: Data by Gas and Data by Industry. We then analysed this data from different perspectives, such as geographic or evolution over time.
 
 ### Data by Gas:
 
