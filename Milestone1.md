@@ -33,7 +33,7 @@ We have explored our data along two main angles: Data by Gas and Data by Industr
 
 - CO<sub>2</sub> emissions per country in 2018
 
-One of our project’s goals is to create visualizations using maps with which the user can interact. We would like to visualize the CO<sub>2</sub> emissions for each country on a world map. The goal is for the user to be able to see at a glance the emissions level for each country, as well as to have the opportunity to get additional details for each country by interacting with the map. The plot below gives an initial idea of how this map would look like using the UNFCCC dataset. Unfortunately, since this dataset only contains data for Annex I Parties, most of the countries of the southern hemisphere are left blank.
+The plot below shows the CO<sub>2</sub> emissions for each country on a world map. Since the UNFCCC dataset only contains data for Annex I Parties, most of the countries of the southern hemisphere are left blank.
 
 ![](images/map.png)
 
