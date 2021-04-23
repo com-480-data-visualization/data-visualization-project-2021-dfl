@@ -37,9 +37,9 @@ One of our project’s goals is to create visualizations using maps with which t
 
 ![](images/map.png)
 
-- Comparison of GHGs emissions between parties
+- Comparison of GHGs emissions between Parties
 
-On the following bar charts, we compare and rank the different GHG emissions per party. We can immediately see that the US is the biggest emitting country, followed by the European Union. 
+On the following bar charts, we compare and rank the different GHG emissions per Party. We can immediately see that the US is the biggest emitting country, followed by the European Union. 
 
 ![](images/CH4_emission_per_region_2018_cropped.png)
 ![](images/CO2_emission_per_region_2018_cropped.png)
