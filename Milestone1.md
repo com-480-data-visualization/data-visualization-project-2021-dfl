@@ -73,6 +73,8 @@ On the bottom of the graph, we observe that the GHG emissions values from Land u
 
 ## IV/ Related work 
 
+The dataset was used by the UNFCCC to produce a [map](https://di.unfccc.int/global_map) displaying information about the different Parties, which is useful to explore data but not interactive enough to understand trends.
+
 There are not many online websites that show visualizations of the GHG emissions in relation to the Paris Agreement and the Kyoto Protocol.
 
 We found the *Paris Agreement Tracker* on *CAIT Climate Data Explorer* [[4]](#references). However, the visualized data is very limited. You can only see the current emission values for each country and group of countries, and how close they are to meeting the goal of the agreement. The data provided is only for a single year.
