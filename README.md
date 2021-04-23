@@ -12,7 +12,7 @@
 
 **10% of the final grade**
 
-This is a preliminary milestone to set up goals for our final project and assess the feasibility of our ideas [here](Milestone1.md).
+This is a preliminary milestone to set up goals for our final project and assess the feasibility of our ideas (you will find it [here](Milestone1.md)).
 
 ### Dataset
 
