@@ -14,7 +14,7 @@
 
 This is a preliminary milestone to set up goals for our final project and assess the feasibility of our ideas (you will find it [here](Milestone1.md)).
 
-In this [Milestone1](Milestone1.md), you will find information about the followings:
+In this [Milestone 1](Milestone1.md), you will find information about the followings:
 
 ### Dataset
 
