@@ -73,30 +73,31 @@ On the bottom of the graph, we observe that the GHG emissions values from Land u
 
 ## IV/ Related work 
 
-The dataset was used by the UNFCCC to produce a [map](https://di.unfccc.int/global_map) displaying information about the different Parties, which is useful to explore data but not interactive enough to understand trends.
+The dataset was used by the UNFCCC to produce a map [[4]](#references) displaying information about the different Parties, which is useful to explore data but not interactive enough to understand trends.
 
 There are not many online websites that show visualizations of the GHG emissions in relation to the Paris Agreement and the Kyoto Protocol.
 
-We found the *Paris Agreement Tracker* on *CAIT Climate Data Explorer* [[4]](#references). However, the visualized data is very limited. You can only see the current emission values for each country and group of countries, and how close they are to meeting the goal of the agreement. The data provided is only for a single year.
+We found the *Paris Agreement Tracker* on *CAIT Climate Data Explorer* [[5]](#references). However, the visualized data is very limited. You can only see the current emission values for each country and group of countries, and how close they are to meeting the goal of the agreement. The data provided is only for a single year.
 
-We also found the website *World Resources Institute* [[5]](#references). It contains several pages with plots related to climate change about GHG, deforestation and more. However, the information provided is limited, as most of the time you only see information for a single year. Also, the plots are not intuitive and seem confusing at times, like the plot from *World Greenhouse Gas Emissions: 2016* [[6]](#references).
+We also found the website *World Resources Institute* [[6]](#references). It contains several pages with plots related to climate change about GHG, deforestation and more. However, the information provided is limited, as most of the time you only see information for a single year. Also, the plots are not intuitive and seem confusing at times, like the plot from *World Greenhouse Gas Emissions: 2016* [[7]](#references).
 
-Regarding the Kyoto Protocol, we found a visualization on the *European Environment Agency* website [[7]](#references). The plot has the same problem as the one for the Paris Agreement. It does not show the evolution of emissions over time. It only shows the target values and how close or distant each country is from reaching them.
+Regarding the Kyoto Protocol, we found a visualization on the *European Environment Agency* website [[8]](#references). The plot has the same problem as the one for the Paris Agreement. It does not show the evolution of emissions over time. It only shows the target values and how close or distant each country is from reaching them.
 
-We also found some interesting and inspiring visualizations on GHG emissions on *Our World In Data* website [[8]](#references). However, we couldn’t find a website that contained all the information that we wanted to portray in ours, that had intuitive and good looking visualizations, and showed the progress of emissions over time and how they relate to the agreements.
+We also found some interesting and inspiring visualizations on GHG emissions on *Our World In Data* website [[9]](#references). However, we couldn’t find a website that contained all the information that we wanted to portray in ours, that had intuitive and good looking visualizations, and showed the progress of emissions over time and how they relate to the agreements.
 
-Part of our inspiration for this project comes from YouTube channels such as *Kurzgesagt* [[9]](#references) and *TED-Ed* [[10]](#references), which use smart animations and visualizations in a video format to convey in a short amount of time useful information on a large variety of subjects. For an example of such a video, click [here](https://youtu.be/RnvCbquYeIM). 
+Part of our inspiration for this project comes from YouTube channels such as *Kurzgesagt* [[10]](#references) and *TED-Ed* [[11]](#references), which use smart animations and visualizations in a video format to convey in a short amount of time useful information on a large variety of subjects. For an example of such a video, click [here](https://youtu.be/RnvCbquYeIM). 
 
 ## References:
 - \[1\]: https://unfccc.int/process-and-meetings/the-convention/what-is-the-united-nations-framework-convention-on-climate-change
 - \[2\]:  https://unfccc.int/process-and-meetings/transparency-and-reporting/greenhouse-gas-data/ghg-data-unfccc/ghg-data-from-unfccc
 - \[3\]: https://unfccc.int/parties-observers
-- \[4\]: https://cait.wri.org/indc/#/ratification
-- \[5\]: https://www.wri.org/ 
-- \[6\]: https://www.wri.org/data/world-greenhouse-gas-emissions-2016
-- \[7\]: https://www.eea.europa.eu/data-and-maps/daviz/total-ghg-emissions-and-kyoto#tab-chart_3 
-- \[8\]: https://ourworldindata.org/emissions-by-sector
-- \[9\]: https://www.youtube.com/user/Kurzgesagt 
-- \[10\]: https://www.youtube.com/channel/UCsooa4yRKGN_zEE8iknghZA 
+- \[4\]: https://di.unfccc.int/global_map
+- \[5\]: https://cait.wri.org/indc/#/ratification
+- \[6\]: https://www.wri.org/ 
+- \[7\]: https://www.wri.org/data/world-greenhouse-gas-emissions-2016
+- \[8\]: https://www.eea.europa.eu/data-and-maps/daviz/total-ghg-emissions-and-kyoto#tab-chart_3 
+- \[9\]: https://ourworldindata.org/emissions-by-sector
+- \[10\]: https://www.youtube.com/user/Kurzgesagt 
+- \[11\]: https://www.youtube.com/channel/UCsooa4yRKGN_zEE8iknghZA 
 
 
