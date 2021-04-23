@@ -81,9 +81,7 @@ We also found the website *World Resources Institute* [[5]](#references). It con
 
 Regarding the Kyoto Protocol, we found a visualization on the *European Environment Agency* website [[7]](#references). The plot has the same problem as the one for the Paris Agreement. It does not show the evolution of emissions over time. It only shows the target values and how close or distant each country is from reaching them.
 
-We also found some interesting and inspiring visualizations on GHG emissions on *Our World In Data* website [[8]](#references).
-
-Overall, we couldn’t find a website that contained all the information that we want to portray in ours, that had intuitive and good looking visualizations, and showed the progress of emissions over time and how they relate to the agreements.
+We also found some interesting and inspiring visualizations on GHG emissions on *Our World In Data* website [[8]](#references). However, we couldn’t find a website that contained all the information that we wanted to portray in ours, that had intuitive and good looking visualizations, and showed the progress of emissions over time and how they relate to the agreements.
 
 Part of our general inspiration for this project comes from Youtube channels such as *Kurzgesagt* [[9]](#references) and *TED-Ed* [[10]](#references), which use smart animations and visualizations in a video format to convey in a short amount of time useful information on a large variety of subjects. For an example of such a video, click [here](https://youtu.be/RnvCbquYeIM). 
 
