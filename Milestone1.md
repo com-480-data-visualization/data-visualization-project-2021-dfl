@@ -6,7 +6,7 @@ The dataset that we will explore comes from the United Nations Framework Convent
 Our analysis will focus on the time series module of the GHG dataset [[2]](#references), which consists of national GHG inventories submitted annually by “Annex I Parties'' between 1990 to 2018.  Annex I Parties consist of the industrialized countries that were members of the OECD in 1992, plus countries with economies in transition, including the Russian Federation, the Baltic States, and several Central and Eastern European States. [[3]](#references) “Non-Annex I Parties” are not part of our analysis, as their GHG emissions data are not available for all years of the time series. 
 
 The GHG dataset is divided into 3 main categories, each having multiple elements:
-- The *Data for GHG total* category includes GHG total emissions, with and without Land-Use Change and Forestry (LULUCF)
+- The *Data for GHG total* category includes GHG total emissions, with and without Land-Use Change and Forestry (LULUCF).
 - The *Data by Gas* category includes emission values for CO<sub>2</sub>, N<sub>2</sub>O and CH<sub>4</sub>.
 - The *Data by Sector* category includes emission values by industry sector. Industry sectors include Energy, Waste, Fugitive Emissions from Fuels, Industrial Processes and Product Use, Transport, Land use, Land-use Change and Forestry.
 
