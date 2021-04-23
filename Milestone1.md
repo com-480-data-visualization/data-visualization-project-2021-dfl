@@ -3,7 +3,7 @@
 
 The dataset that we will explore comes from the United Nations Framework Convention on Climate Change (UNFCCC), an international environmental treaty addressing climate change, which ultimate objective is to stabilize greenhouse gas (GHG) concentrations "at a level that would prevent dangerous anthropogenic (human induced) interference with the climate system." The UNFCCC entered into force in 1994. The 197 countries that have ratified the Convention are called Parties to the Convention. [[1]](#references)
 
-Our analysis will focus on the time series module of the GHG dataset [2], which consists of national GHG inventories submitted annually by “Annex I Parties'' between 1990 to 2018.  Annex I Parties consist of the industrialized countries that were members of the OECD in 1992, plus countries with economies in transition, including the Russian Federation, the Baltic States, and several Central and Eastern European States. [3] “Non-Annex I Parties” are not part of our analysis, as their GHG emissions data are not available for all years of the time series. 
+Our analysis will focus on the time series module of the GHG dataset [[2]](#references), which consists of national GHG inventories submitted annually by “Annex I Parties'' between 1990 to 2018.  Annex I Parties consist of the industrialized countries that were members of the OECD in 1992, plus countries with economies in transition, including the Russian Federation, the Baltic States, and several Central and Eastern European States. [[3]](#references) “Non-Annex I Parties” are not part of our analysis, as their GHG emissions data are not available for all years of the time series. 
 
 The GHG dataset is divided into 3 main categories, each having multiple elements:
 - The Data for GHG total category includes GHG total emissions, with and without Land-Use Change and Forestry (LULUCF)
@@ -75,17 +75,17 @@ On the bottom of the graph, we observe that the GHG emissions values from Land u
 
 There are only a few online websites that show visualizations of the greenhouse gases emissions in relation to the Paris Agreement and the Kyoto Protocol.
 
-We found the Paris Agreement Tracker on CAIT Climate Data Explorer [4]. However, the visualized data is very limited. You can only see the current emission values for each country and group of countries, and how close they are to meeting the goal of the agreement. The data provided is only for a single year.
+We found the Paris Agreement Tracker on CAIT Climate Data Explorer [[4]](#references). However, the visualized data is very limited. You can only see the current emission values for each country and group of countries, and how close they are to meeting the goal of the agreement. The data provided is only for a single year.
 
-We also found the website World Resources Institute [5]. It contains several pages with plots related to climate change about greenhouse gases, deforestation and more. However, the information provided is limited, as most of the time you only see information for a single year. Also, the plots are not intuitive and seem confusing at times, like the plot from World Greenhouse Gas Emissions: 2016 [6].
+We also found the website World Resources Institute [[5]](#references). It contains several pages with plots related to climate change about greenhouse gases, deforestation and more. However, the information provided is limited, as most of the time you only see information for a single year. Also, the plots are not intuitive and seem confusing at times, like the plot from World Greenhouse Gas Emissions: 2016 [[6]](#references).
 
-Regarding the Kyoto Protocol, we found a visualization on the European Environment Agency website [7]. The plot has the same problem as the one for the Paris Agreement. It does not show the evolution of emissions over time. It only shows the target values and how close or distant each country is from reaching them.
+Regarding the Kyoto Protocol, we found a visualization on the European Environment Agency website [[7]](#references). The plot has the same problem as the one for the Paris Agreement. It does not show the evolution of emissions over time. It only shows the target values and how close or distant each country is from reaching them.
 
-We also found some interesting and inspiring visualizations on GHG emissions on Our World In Data website [8].
+We also found some interesting and inspiring visualizations on GHG emissions on Our World In Data website [[8]](#references).
 
 Overall, we couldn’t find a website that contained all the information that we want to portray in ours, that had intuitive and good looking visualizations, and showed the progress of emissions over time and how they relate to the agreements.
 
-Part of our general inspiration for this project comes from Youtube channels such as Kurzgesagt [9] and TED-Ed [10], which use smart animations and visualizations in a video format to convey in a short amount of time useful information on a large variety of subjects. For an example of such a video, click here: https://youtu.be/RnvCbquYeIM. 
+Part of our general inspiration for this project comes from Youtube channels such as Kurzgesagt [[9]](#references) and TED-Ed [[10]](#references), which use smart animations and visualizations in a video format to convey in a short amount of time useful information on a large variety of subjects. For an example of such a video, click here: https://youtu.be/RnvCbquYeIM. 
 
 ## References:
 - \[1\]: https://unfccc.int/process-and-meetings/the-convention/what-is-the-united-nations-framework-convention-on-climate-change
