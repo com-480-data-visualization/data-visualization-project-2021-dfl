@@ -10,7 +10,7 @@ The GHG dataset is divided into 3 main categories, each having multiple elements
 - The *Data by Gas* category includes emission values for CO<sub>2</sub>, N<sub>2</sub>O and CH<sub>4</sub>.
 - The *Data by Sector* category includes emission values by industry sector. Industry sectors include Energy, Waste, Fugitive Emissions from Fuels, Industrial Processes and Product Use, Transport, Land use, Land-use Change and Forestry.
 
-The data is well structured and an excel file can be downloaded for each subcategory. As a result, most of the pre-processing and data-cleaning boils down to extracting the information from each Excel file, removing comments and titles and cleaning the numeric values by removing the thousands-separators. We then export the processed files into CSV format, in order for us to be able to explore the dataset and to extract useful information.
+The data is well structured and an excel file can be downloaded for each subcategory. As a result, most of the pre-processing and data-cleaning boils down to extracting the information from each Excel file, removing comments and titles and cleaning the numeric values by removing the thousands-separators. We then export the processed files into CSV format, in order for us to explore the dataset and to extract useful information.
 
 
 ## II/ Problematic
