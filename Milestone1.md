@@ -73,11 +73,11 @@ On the bottom of the graph, we observe that the GHG emissions values from Land u
 
 ## IV/ Related work 
 
-There are only a few online websites that show visualizations of the greenhouse gases emissions in relation to the Paris Agreement and the Kyoto Protocol.
+There are only a few online websites that show visualizations of the GHG emissions in relation to the Paris Agreement and the Kyoto Protocol.
 
 We found the Paris Agreement Tracker on CAIT Climate Data Explorer [[4]](#references). However, the visualized data is very limited. You can only see the current emission values for each country and group of countries, and how close they are to meeting the goal of the agreement. The data provided is only for a single year.
 
-We also found the website World Resources Institute [[5]](#references). It contains several pages with plots related to climate change about greenhouse gases, deforestation and more. However, the information provided is limited, as most of the time you only see information for a single year. Also, the plots are not intuitive and seem confusing at times, like the plot from World Greenhouse Gas Emissions: 2016 [[6]](#references).
+We also found the website World Resources Institute [[5]](#references). It contains several pages with plots related to climate change about GHG, deforestation and more. However, the information provided is limited, as most of the time you only see information for a single year. Also, the plots are not intuitive and seem confusing at times, like the plot from World Greenhouse Gas Emissions: 2016 [[6]](#references).
 
 Regarding the Kyoto Protocol, we found a visualization on the European Environment Agency website [[7]](#references). The plot has the same problem as the one for the Paris Agreement. It does not show the evolution of emissions over time. It only shows the target values and how close or distant each country is from reaching them.
 
