@@ -7,7 +7,7 @@ Our analysis will focus on the time series module of the GHG dataset [[2]](#refe
 
 The GHG dataset is divided into 3 main categories, each having multiple elements:
 - The *Data for GHG total* category includes GHG total emissions, with and without Land-Use Change and Forestry (LULUCF)
-- The *Data by Gas* category includes emission values for CO2, N2O and CH4.
+- The *Data by Gas* category includes emission values for CO<sub>2</sub>, N<sub>2</sub>O and CH4.
 - The *Data by Sector* category includes emission values by industry sector. Industry sectors include Energy, Waste, Fugitive Emissions from Fuels, Industrial Processes and Product Use, Transport, Land use, Land-use Change and Forestry.
 
 The data is well structured and an excel file can be downloaded for each subcategory. As a result, most of the pre-processing and data-cleaning boils down to extracting the information from each Excel file, removing comments and titles and cleaning the numeric values by removing the thousands-separators. We then export the processed files into CSV format, in order for us to be able to explore the dataset and to extract useful information.
@@ -31,9 +31,9 @@ We have explored our data along two main angles: Data by Gas and Data by Industr
 
 ### Data by Gas:
 
-- CO2 emissions per country in 2018
+- CO<sub>2</sub> emissions per country in 2018
 
-One of our project’s goals is to create visualizations using maps with which the user can interact. We would like to visualize the CO2 emissions for each country on a world map. The goal is for the user to be able to see at a glance the emissions level for each country, as well as to have the opportunity to get additional details for each country by interacting with the map. The plot below gives an initial idea of how this map would look like using the UNFCCC dataset. Unfortunately, since this dataset only contains data for Annex I Parties, most of the countries of the southern hemisphere are left blank.
+One of our project’s goals is to create visualizations using maps with which the user can interact. We would like to visualize the CO<sub>2</sub> emissions for each country on a world map. The goal is for the user to be able to see at a glance the emissions level for each country, as well as to have the opportunity to get additional details for each country by interacting with the map. The plot below gives an initial idea of how this map would look like using the UNFCCC dataset. Unfortunately, since this dataset only contains data for Annex I Parties, most of the countries of the southern hemisphere are left blank.
 
 ![](images/map.png)
 
@@ -56,7 +56,7 @@ On the following plots, we explore possible correlations between different GHG e
 
 - Impact of the climate change agreements
 
-On the following plot, we explore the impact of the 3 climate change agreements on GHG emissions over time for the US and Europe. We compared the CO2 emissions for the US and Europe between 1990 and 2018. We can see that CO2 emissions in the US kept rising until 2006 and started decreasing after that. In Europe, the general tendency was for CO2 emissions to go down.
+On the following plot, we explore the impact of the 3 climate change agreements on GHG emissions over time for the US and Europe. We compared the CO<sub>2</sub> emissions for the US and Europe between 1990 and 2018. We can see that CO<sub>2</sub> emissions in the US kept rising until 2006 and started decreasing after that. In Europe, the general tendency was for CO<sub>2</sub> emissions to go down.
 
 ![](images/United_States_of_America_and_Europe_Co2.png)
 
