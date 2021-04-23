@@ -75,17 +75,17 @@ On the bottom of the graph, we observe that the GHG emissions values from Land u
 
 There are not many online websites that show visualizations of the GHG emissions in relation to the Paris Agreement and the Kyoto Protocol.
 
-We found the Paris Agreement Tracker on CAIT Climate Data Explorer [[4]](#references). However, the visualized data is very limited. You can only see the current emission values for each country and group of countries, and how close they are to meeting the goal of the agreement. The data provided is only for a single year.
+We found the *Paris Agreement Tracker* on *CAIT Climate Data Explorer* [[4]](#references). However, the visualized data is very limited. You can only see the current emission values for each country and group of countries, and how close they are to meeting the goal of the agreement. The data provided is only for a single year.
 
-We also found the website World Resources Institute [[5]](#references). It contains several pages with plots related to climate change about GHG, deforestation and more. However, the information provided is limited, as most of the time you only see information for a single year. Also, the plots are not intuitive and seem confusing at times, like the plot from World Greenhouse Gas Emissions: 2016 [[6]](#references).
+We also found the website *World Resources Institute* [[5]](#references). It contains several pages with plots related to climate change about GHG, deforestation and more. However, the information provided is limited, as most of the time you only see information for a single year. Also, the plots are not intuitive and seem confusing at times, like the plot from *World Greenhouse Gas Emissions: 2016* [[6]](#references).
 
-Regarding the Kyoto Protocol, we found a visualization on the European Environment Agency website [[7]](#references). The plot has the same problem as the one for the Paris Agreement. It does not show the evolution of emissions over time. It only shows the target values and how close or distant each country is from reaching them.
+Regarding the Kyoto Protocol, we found a visualization on the *European Environment Agency* website [[7]](#references). The plot has the same problem as the one for the Paris Agreement. It does not show the evolution of emissions over time. It only shows the target values and how close or distant each country is from reaching them.
 
-We also found some interesting and inspiring visualizations on GHG emissions on Our World In Data website [[8]](#references).
+We also found some interesting and inspiring visualizations on GHG emissions on *Our World In Data* website [[8]](#references).
 
 Overall, we couldn’t find a website that contained all the information that we want to portray in ours, that had intuitive and good looking visualizations, and showed the progress of emissions over time and how they relate to the agreements.
 
-Part of our general inspiration for this project comes from Youtube channels such as Kurzgesagt [[9]](#references) and TED-Ed [[10]](#references), which use smart animations and visualizations in a video format to convey in a short amount of time useful information on a large variety of subjects. For an example of such a video, click [here](https://youtu.be/RnvCbquYeIM). 
+Part of our general inspiration for this project comes from Youtube channels such as *Kurzgesagt* [[9]](#references) and *TED-Ed* [[10]](#references), which use smart animations and visualizations in a video format to convey in a short amount of time useful information on a large variety of subjects. For an example of such a video, click [here](https://youtu.be/RnvCbquYeIM). 
 
 ## References:
 - \[1\]: https://unfccc.int/process-and-meetings/the-convention/what-is-the-united-nations-framework-convention-on-climate-change
