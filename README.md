@@ -3,7 +3,7 @@
 | Student's name | SCIPER |
 | -------------- | ------ |
 | Dora Lourenço  | 331202 |
-| Loïc Busson    | |
+| Loïc Busson    | 283671 |
 | Francis Murray | 302071 |
 
 [Milestone 1](Milestone1.md) • [Milestone 2](#milestone-2) • [Milestone 3](#milestone-3)
