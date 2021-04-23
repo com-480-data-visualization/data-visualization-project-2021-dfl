@@ -12,10 +12,7 @@
 
 **10% of the final grade**
 
-This is a preliminary milestone to let you set up goals for your final project and assess the feasibility of your ideas.
-Please, fill the following sections about your project.
-
-*(max. 2000 characters per section)*
+This is a preliminary milestone to set up goals for our final project and assess the feasibility of our ideas [here](Milestone1.md).
 
 ### Dataset
 
