@@ -47,7 +47,7 @@ On the following bar charts, we compare and rank the different GHG emissions per
 
 -  Correlations between different GHG emissions
 
-On the following plots, we explore possible correlations between different GHG emissions for a specific year. To visualize this, we used scatter plots with one type of gas on each axis and each dot representing a country. We can see that the different gas emissions are usually quite correlated, except for a few outliers.
+On the following plots, we explore possible correlations between different GHG emissions for a specific year. To visualize this, we used scatter plots with one type of gas on each axis, each dot representing a country. We can see that the different gas emissions are usually quite correlated, except for a few outliers.
 
 ![](images/CH₄_emission_with_respect_to_CO₂_emission.png)
 ![](images/CH₄_emission_with_respect_to_CO₂_emission_(per_habitant).png)
