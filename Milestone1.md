@@ -73,7 +73,7 @@ On the bottom of the graph, we observe that the GHG emissions values from Land u
 
 ## IV/ Related work 
 
-There are only a few online websites that show visualizations of the GHG emissions in relation to the Paris Agreement and the Kyoto Protocol.
+There are not many online websites that show visualizations of the GHG emissions in relation to the Paris Agreement and the Kyoto Protocol.
 
 We found the Paris Agreement Tracker on CAIT Climate Data Explorer [[4]](#references). However, the visualized data is very limited. You can only see the current emission values for each country and group of countries, and how close they are to meeting the goal of the agreement. The data provided is only for a single year.
 
