@@ -1,7 +1,7 @@
 # Milestone 1
 ## I/ Dataset 
 
-The dataset that we will explore comes from the United Nations Framework Convention on Climate Change (UNFCCC), an international environmental treaty addressing climate change, which ultimate objective is to stabilize greenhouse gas (GHG) concentrations "at a level that would prevent dangerous anthropogenic (human induced) interference with the climate system." The UNFCCC entered into force in 1994. The 197 countries that have ratified the Convention are called Parties to the Convention. [1](#references)
+The dataset that we will explore comes from the United Nations Framework Convention on Climate Change (UNFCCC), an international environmental treaty addressing climate change, which ultimate objective is to stabilize greenhouse gas (GHG) concentrations "at a level that would prevent dangerous anthropogenic (human induced) interference with the climate system." The UNFCCC entered into force in 1994. The 197 countries that have ratified the Convention are called Parties to the Convention. [[1]](#references)
 
 Our analysis will focus on the time series module of the GHG dataset [2], which consists of national GHG inventories submitted annually by “Annex I Parties'' between 1990 to 2018.  Annex I Parties consist of the industrialized countries that were members of the OECD in 1992, plus countries with economies in transition, including the Russian Federation, the Baltic States, and several Central and Eastern European States. [3] “Non-Annex I Parties” are not part of our analysis, as their GHG emissions data are not available for all years of the time series. 
 
