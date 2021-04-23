@@ -85,7 +85,7 @@ We also found some interesting and inspiring visualizations on GHG emissions on 
 
 Overall, we couldn’t find a website that contained all the information that we want to portray in ours, that had intuitive and good looking visualizations, and showed the progress of emissions over time and how they relate to the agreements.
 
-Part of our general inspiration for this project comes from Youtube channels such as Kurzgesagt [[9]](#references) and TED-Ed [[10]](#references), which use smart animations and visualizations in a video format to convey in a short amount of time useful information on a large variety of subjects. For an example of such a video, click here: https://youtu.be/RnvCbquYeIM. 
+Part of our general inspiration for this project comes from Youtube channels such as Kurzgesagt [[9]](#references) and TED-Ed [[10]](#references), which use smart animations and visualizations in a video format to convey in a short amount of time useful information on a large variety of subjects. For an example of such a video, click [here](https://youtu.be/RnvCbquYeIM). 
 
 ## References:
 - \[1\]: https://unfccc.int/process-and-meetings/the-convention/what-is-the-united-nations-framework-convention-on-climate-change
