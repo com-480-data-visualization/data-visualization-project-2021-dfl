@@ -35,37 +35,37 @@ We have explored our data along two main angles: *Data by Gas* and *Data by Indu
 
 The plot below shows the CO<sub>2</sub> emissions for each country on a world map. Since the UNFCCC dataset only contains data for Annex I Parties, most of the countries of the southern hemisphere are left blank.
 
-![](images/map.png)
+![](../images/map.png)
 
 - Comparison of GHGs emissions between Parties
 
 On the following bar charts, we compare and rank the different GHG emissions per Party. We can immediately see that the US is the biggest emitting country, followed by the European Union. 
 
-![](images/CH4_emission_per_region_2018_cropped.png)
-![](images/CO2_emission_per_region_2018_cropped.png)
-![](images/N2O_emission_per_region_2018_cropped.png)
+![](../images/CH4_emission_per_region_2018_cropped.png)
+![](../images/CO2_emission_per_region_2018_cropped.png)
+![](../images/N2O_emission_per_region_2018_cropped.png)
 
 -  Correlations between different GHG emissions
 
 On the following plots, we explore possible correlations between different GHG emissions for a specific year. To visualize this, we used scatter plots with one type of gas on each axis, each dot representing a country. We can see that the different gas emissions are usually quite correlated, except for a few outliers.
 
-![](images/CH₄_emission_with_respect_to_CO₂_emission.png)
-![](images/CH₄_emission_with_respect_to_CO₂_emission_(per_habitant).png)
-![](images/N₂O_emission_with_respect_to_CO₂_emission.png)
-![](images/N₂O_emission_with_respect_to_CO₂_emission_(per_habitant).png)
+![](../images/CH₄_emission_with_respect_to_CO₂_emission.png)
+![](../images/CH₄_emission_with_respect_to_CO₂_emission_(per_habitant).png)
+![](../images/N₂O_emission_with_respect_to_CO₂_emission.png)
+![](../images/N₂O_emission_with_respect_to_CO₂_emission_(per_habitant).png)
 
 - Impact of the climate change agreements
 
 On the following plot, we explore the impact of the 3 climate change agreements on GHG emissions over time for the US and Europe. We compared the CO<sub>2</sub> emissions for the US and Europe between 1990 and 2018. We can see that CO<sub>2</sub> emissions in the US kept rising until 2006 and started decreasing after that. In Europe, the general tendency was for CO<sub>2</sub> emissions to go down.
 
-![](images/United_States_of_America_and_Europe_Co2.png)
+![](../images/United_States_of_America_and_Europe_Co2.png)
 
 
 ### Data by Sector:
 
 For this category, we have compared the gas emissions by industry sector.
 
-![](images/GHG_emissions_per_sector.png)
+![](../images/GHG_emissions_per_sector.png)
 
 This bar graph shows that the largest GHG emissions come from the Energy sector, the largest subsection of this sector being the Energy Industries (industries involved in the production and sale of energy). 
 On the bottom of the graph, we observe that the GHG emissions values from Land use are negative, meaning that the Land can actually absorb GHGs, which is one of the ways to significantly contribute to mitigation of climate change.
@@ -89,7 +89,7 @@ Part of our inspiration for this project comes from YouTube channels such as *Ku
 
 ## References:
 - \[1\]: https://unfccc.int/process-and-meetings/the-convention/what-is-the-united-nations-framework-convention-on-climate-change
-- \[2\]:  https://unfccc.int/process-and-meetings/transparency-and-reporting/greenhouse-gas-data/ghg-data-unfccc/ghg-data-from-unfccc
+- \[2\]: https://unfccc.int/process-and-meetings/transparency-and-reporting/greenhouse-gas-data/ghg-data-unfccc/ghg-data-from-unfccc
 - \[3\]: https://unfccc.int/parties-observers
 - \[4\]: https://di.unfccc.int/global_map
 - \[5\]: https://cait.wri.org/indc/#/ratification
