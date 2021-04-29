@@ -6,15 +6,15 @@
 | Loïc Busson    | 283671 |
 | Francis Murray | 302071 |
 
-[Milestone 1](Milestone1.md) • [Milestone 2](Milestone2.pdf) • [Milestone 3](Milestone3.pdf)
+[Milestone 1](milestones/Milestone1.md) • [Milestone 2](milestones/Milestone2.pdf) • [Milestone 3](milestones/Milestone3.pdf)
 
 ## Milestone 1 (23rd April, 5pm)
 
 **10% of the final grade**
 
-This is a preliminary milestone to set up goals for our final project and assess the feasibility of our ideas (you will find it [here](Milestone1.md)).
+This is a preliminary milestone to set up goals for our final project and assess the feasibility of our ideas (you will find it [here](milestones/Milestone1.md)).
 
-In this [Milestone 1](Milestone1.md), you will find information about the followings:
+In this [Milestone 1](milestones/Milestone1.md), you will find information about the followings:
 
 ### Dataset
 
