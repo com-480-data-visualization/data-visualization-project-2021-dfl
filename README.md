@@ -6,7 +6,7 @@
 | Loïc Busson    | 283671 |
 | Francis Murray | 302071 |
 
-[Milestone 1](milestones/Milestone1.md) • [Milestone 2](milestones/Milestone2.pdf) • [Milestone 3](milestones/Milestone3.pdf)
+[Milestone 1](milestones/Milestone1.md) • [Milestone 2](milestones/Milestone_2.pdf) • [Milestone 3](milestones/Milestone3.pdf)
 
 ## Milestone 1 (23rd April, 5pm)
 
