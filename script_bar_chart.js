@@ -126,7 +126,6 @@ function ready(error, topo) {
     .attr("height", h_chart);
 
     // Creating a Dropdown Menu for choosing the year
-    //svg_chart.append("button").classed("dropbtn", true).attr("onclick", "toggle()")
     d3.select("#select_year_Button")
       .selectAll('myOptions')
       .data(years)
@@ -135,6 +134,23 @@ function ready(error, topo) {
       .text(function (d) { return d; })
       .attr("value", function (d) { return d; })
 
+    // Creating a Dropdown Menu for choosing the number of countries to display
+    d3.select("#select_k_Button")
+      .selectAll('myOptions')
+      .data(d3.range(Object.keys(data_target[target]).length, 0 ,-1))
+      .enter()
+      .append('option')
+      .text(function (d) { return d; })
+      .attr("value", function (d) { return d; })
+
+    // Creating a Dropdown Menu for choosing the dataset (LULUCF or no LULUCF)
+    d3.select("#select_LULUCF_Button")
+      .selectAll('myOptions')
+      .data(["No LULUCF", "LULUCF"])
+      .enter()
+      .append('option')
+      .text(function (d) { return d; })
+      .attr("value", function (d, i) { return i; })
 
     // Filtering the data loaded to keep only the k best country in 1990 and target type
     // Note that the best ones in 1990 are the ones with the highest goals
@@ -281,11 +297,18 @@ function ready(error, topo) {
     .attr("font-size", '10px')
     .text("Reduction in GHG emission (in kt CO2 equivalent)");
 
-    // Function to update the plot when the user changes the year thanks to the dropdown button
-    function update(year) {
-        
+    // Function to update the plot when the user changes the parameters thanks to the dropdown button
+    function update(year, k, LULUCF) {
+
     // Filtering the data loaded to keep only the k best country in year and target type
-    let data = ranking_reduction(year, data_GHG_LULUCF, data_target, target, k);
+    if (LULUCF == 1) {
+        var data = ranking_reduction(year, data_GHG_LULUCF, data_target, target, k);
+    }
+    
+    else {
+        var data = ranking_reduction(year, data_GHG_no_LULUCF, data_target, target, k);
+    }
+
     let topk_countries = data[0];
     let topk_reduction = data[1];
     let topk_kyoto_goal = data[2];
@@ -391,22 +414,20 @@ function ready(error, topo) {
 
     }
 
-    d3.select("#select_year_Button").on("change", function(d) {
-        let year = d3.select(this).property("value")
-        update(year)
+    // Event listener to update the plot when user changes some parameters
+    d3.selectAll(".button").on("change", function(d) {
+        let year = d3.select("#select_year_Button").property("value");
+
+        let LULUCF = d3.select("#select_LULUCF_Button").property("value");
+        //TODO: See how to do when the number of rect are not the same (not only transition anymore...)
+        //let k = d3.select("#select_k_Button").property("value")
+        update(year, k, LULUCF)
     })
 }
 
-//TODO: weekend: read and apply the chapter on Updates, transitions and motion ==> get the automatic ranking
-//TODO: don't fortget to update the Scales and the Axis (170)
-//TODO: Add flag with values after the rectangles
 //TODO: pointage du doigt -> best 15 and 5 worst
 
 //TODO: have an origin that is not fixed. fix the variable origin to min of all rectangles
-
-//TODO: early next week: read and apply chapter on interactivity + brushing to get the ranking on many whatever year
-
-//TODO: middle of the week: merge with the others
 
 //TODO: Report + movie
 
