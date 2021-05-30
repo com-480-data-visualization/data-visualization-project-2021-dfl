@@ -379,6 +379,7 @@ function ready(error, topo) {
 //TODO: weekend: read and apply the chapter on Updates, transitions and motion ==> get the automatic ranking
 //TODO: don't fortget to update the Scales and the Axis (170)
 //TODO: Add flag with values after the rectangles
+//TODO: pointage du doigt -> best 15 and 5 worst
 
 //TODO: have an origin that is not fixed. fix the variable origin to min of all rectangles
 
@@ -387,3 +388,5 @@ function ready(error, topo) {
 //TODO: middle of the week: merge with the others
 
 //TODO: Report + movie
+
+
