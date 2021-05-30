@@ -55,11 +55,12 @@ function ranking_reduction(year, reduction_emission_dataset, kyoto_data, target,
     It returns the ten k top countries, alongside with their respective emission reduction 
     as well as their goal.
     */
-    let data = reduction_emission_dataset[year];
-
     const topk_countries = [];
     const topk_reduction = [];
     const topk_kyoto_goal = [];
+
+    if (year > 1990) {
+    let data = reduction_emission_dataset[year];
 
     Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
    {
@@ -70,6 +71,21 @@ function ranking_reduction(year, reduction_emission_dataset, kyoto_data, target,
 
       }
    });
+}
+
+   else {
+   let data = kyoto_data[target];
+
+   Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
+   {
+      if(ind < k){
+         topk_countries.push(key);
+         topk_reduction.push(0);
+         topk_kyoto_goal.push(kyoto_data[target][key]);
+
+   }
+});
+   }
 
    return [topk_countries, topk_reduction, topk_kyoto_goal];
 
@@ -99,7 +115,7 @@ function ready(error, topo) {
     let img_origin = 0;
     let width_mark = 1;
     let target = "target1";
-    let year = 1990;
+    let year = 1990; //default of the dropdown menu is 1990
     let k = 38;
 
     // Creating SVG for the ranking plot:The .dropdown-content class holds the actual dropdown menu. It is hidden by default, and will be displayed on hover (see below). Note the min-width is set to 160px. Feel free to change this. Tip: If you want the width of the dropdown content to be as wide as the dropdown button, set the width to 100% (and overflow:auto to enable scroll on small screens). <svg>
@@ -120,24 +136,25 @@ function ready(error, topo) {
       .attr("value", function (d) { return d; })
 
 
-    // Filtering the data loaded to keep only the k best country in year and target type
+    // Filtering the data loaded to keep only the k best country in 1990 and target type
+    // Note that the best ones in 1990 are the ones with the highest goals
     let data = ranking_reduction(year, data_GHG_LULUCF, data_target, target, k);
-    let top10_countries = data[0];
-    let top10_reduction = data[1];
-    let top10_kyoto_goal = data[2];
+    let topk_countries = data[0];
+    let topk_reduction = data[1];
+    let topk_kyoto_goal = data[2];
 
 
     // Console log for codding purposes (TODO: Delete them at the end)
-    console.log(top10_countries)
-    console.log(top10_kyoto_goal)
-    console.log(top10_reduction)
+    console.log(topk_countries)
+    console.log(topk_kyoto_goal)
+    console.log(topk_reduction)
 
     
     // Defining Scales
     let x_Scale = d3.scaleLinear()
-    .domain([-d3.max([d3.max(top10_kyoto_goal), d3.max(top10_reduction)]),d3.max([d3.max(top10_kyoto_goal), d3.max(top10_reduction)])])
+    .domain([-d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)]),d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)])])
     .range([- (w_chart/2 - padding_chart), w_chart/2 - padding_chart]);
-    let y_Scale = d3.scaleBand().domain(d3.range(top10_kyoto_goal.length)).rangeRound([0, h_chart - xaxis_height_padding - 3]).paddingInner(0.35);
+    let y_Scale = d3.scaleBand().domain(d3.range(topk_kyoto_goal.length)).rangeRound([0, h_chart - xaxis_height_padding - 3]).paddingInner(0.35);
 
     // Defining Axis
     let xAxis = d3.axisBottom().scale(x_Scale).tickFormat(d3.format(".2s"));
@@ -157,7 +174,7 @@ function ready(error, topo) {
     //Adding rectangles inside the corresponding group (here: target)
     node_g_target
     .selectAll(".target")
-    .data(top10_kyoto_goal)
+    .data(topk_kyoto_goal)
     .enter()
     .append("rect")
     .attr("y", function (d, i) {
@@ -181,7 +198,7 @@ function ready(error, topo) {
     //Adding rectangles inside the corresponding group (here: em)
     node_g_em
     .selectAll(".em")
-    .data(top10_reduction)
+    .data(topk_reduction)
     .enter()
     .append("rect")
     .attr("y", function (d, i) {
@@ -212,13 +229,15 @@ function ready(error, topo) {
     //Adding flags inside the corresponding group (here: img)
     node_g_flags
     .selectAll(".img")
-    .data(top10_countries)
+    .data(topk_countries)
     .enter()
     .append("svg:image")
     .attr("y", function (d, i) {
         return y_Scale(i);
     })
-    .attr("x", img_origin)
+    .attr("x", function (d,i) {
+        return origin + Math.max(x_Scale(topk_reduction[i]), x_Scale(topk_kyoto_goal[i]), 0)
+    })
     .attr("height", y_Scale.bandwidth())
     .attr("width", flag_width)
     .attr("xlink:href", function (d) {
@@ -228,7 +247,7 @@ function ready(error, topo) {
     //Adding a red mark at the kyoto reduction emission goal of country
     node_g_mark
     .selectAll(".goal")
-    .data(top10_kyoto_goal)
+    .data(topk_kyoto_goal)
     .enter()
     .append("rect")
     .attr("y", function (d, i) {
@@ -267,25 +286,25 @@ function ready(error, topo) {
         
     // Filtering the data loaded to keep only the k best country in year and target type
     let data = ranking_reduction(year, data_GHG_LULUCF, data_target, target, k);
-    let top10_countries = data[0];
-    let top10_reduction = data[1];
-    let top10_kyoto_goal = data[2];
+    let topk_countries = data[0];
+    let topk_reduction = data[1];
+    let topk_kyoto_goal = data[2];
 
 
     // Console log for codding purposes (TODO: Delete them at the end)
-    console.log(top10_countries)
-    console.log(top10_kyoto_goal)
-    console.log(top10_reduction)
+    console.log(topk_countries)
+    console.log(topk_kyoto_goal)
+    console.log(topk_reduction)
 
     
     // Redefining Scales
-    x_Scale.domain([-d3.max([d3.max(top10_kyoto_goal), d3.max(top10_reduction)]),d3.max([d3.max(top10_kyoto_goal), d3.max(top10_reduction)])])
-    y_Scale.domain(d3.range(top10_kyoto_goal.length));
+    x_Scale.domain([-d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)]),d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)])])
+    y_Scale.domain(d3.range(topk_kyoto_goal.length));
 
     //Adding rectangles inside the corresponding group (here: target)
     node_g_target
     .selectAll("rect")
-    .data(top10_kyoto_goal)
+    .data(topk_kyoto_goal)
     .transition()
     .attr("y", function (d, i) {
         return y_Scale(i);
@@ -308,7 +327,7 @@ function ready(error, topo) {
     //Adding rectangles inside the corresponding group (here: em)
     node_g_em
     .selectAll("rect")
-    .data(top10_reduction)
+    .data(topk_reduction)
     .transition()
     .attr("y", function (d, i) {
         return y_Scale(i);
@@ -338,12 +357,14 @@ function ready(error, topo) {
     //Adding flags inside the corresponding group (here: img)
     node_g_flags
     .selectAll("image")
-    .data(top10_countries)
+    .data(topk_countries)
     .transition()
     .attr("y", function (d, i) {
         return y_Scale(i);
     })
-    .attr("x", img_origin)
+    .attr("x", function (d,i) {
+        return origin + Math.max(x_Scale(topk_reduction[i]), x_Scale(topk_kyoto_goal[i]), 0)
+    })
     .attr("height", y_Scale.bandwidth())
     .attr("width", flag_width)
     .attr("xlink:href", function (d) {
@@ -353,7 +374,7 @@ function ready(error, topo) {
     //Adding a red mark at the kyoto reduction emission goal of country
     node_g_mark
     .selectAll("rect")
-    .data(top10_kyoto_goal)
+    .data(topk_kyoto_goal)
     .transition()
     .attr("y", function (d, i) {
         return y_Scale(i);
