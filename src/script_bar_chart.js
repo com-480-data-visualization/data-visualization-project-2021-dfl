@@ -30,9 +30,9 @@ for (i = 1990; i <= 2018; i++) {
 d3.queue()
         .defer(d3.csv, "data/Kyoto_targets_copy.csv", function(d) {
             data_target["target1"][d.Party] = -parseFloat(d.target1); // minus to convert it to a "reduction"
-            data_target["target1noLULUCF"][d.Party] = -parseFloat(d.target1);
-            data_target["target2"][d.Party] = -parseFloat(d.target1);
-            data_target["target2noLULUCF"][d.Party] = -parseFloat(d.target1);})
+            data_target["target1noLULUCF"][d.Party] = -parseFloat(d.target1no);
+            data_target["target2"][d.Party] = -parseFloat(d.target2);
+            data_target["target2noLULUCF"][d.Party] = -parseFloat(d.target2no);})
         .defer(d3.csv, "data/GHG_LULUCF_copy.csv", function(d) {
             for (i = 1990; i <= 2018; i++) {
             data_GHG_LULUCF[String(i)][d.Party] = parseFloat(d[1990]) - parseFloat(d[String(i)]); // storing the reduction compared to the year 1990
@@ -93,7 +93,6 @@ function ranking_reduction(year, reduction_emission_dataset, kyoto_data, target,
 
 // Function executed after data has been loaded:
 function ready(error, topo) {
-
     //if error during the logging:
     if (error) throw error;
 
@@ -104,7 +103,16 @@ function ready(error, topo) {
     console.log("noLULUCF", data_GHG_no_LULUCF)
 
 
-    // SVG parameters
+    // SVG parameters and global variables
+    let svg_chart;
+    let node_g_target;
+    let node_g_em;
+    let node_g_flags;
+    let node_g_mark;
+    let xAxis;
+    let selected_country;
+    let k_new;
+    let LULUCF;
     let w_chart = 1600;
     let h_chart = 700;
     let xaxis_height_padding = h_chart/15;
@@ -114,7 +122,7 @@ function ready(error, topo) {
     let origin = w_chart / 2;
     let img_origin = 0;
     let width_mark = 1;
-    let target = "target1"; 
+    let target = "target1noLULUCF"; 
     let year = 1990; //default of the dropdown menu is 1990
     let k = Object.keys(data_target[target]).length;
 
@@ -148,16 +156,9 @@ function ready(error, topo) {
     // Defining Scales
     let x_Scale = d3.scaleLinear().range([- (w_chart/2 - padding_chart), w_chart/2 - padding_chart]);
     let y_Scale = d3.scaleBand().rangeRound([0, h_chart - xaxis_height_padding - 3]).paddingInner(0.35);
-
-    let svg_chart;
-    let node_g_target;
-    let node_g_em;
-    let node_g_flags;
-    let node_g_mark;
-    let xAxis;
     
 
-    function creation (year, data_GHG, k) {
+    function creation (year, data_GHG, k, target) {
 
         // Creating SVG for the ranking plot:The .dropdown-content class holds the actual dropdown menu. It is hidden by default, and will be displayed on hover (see below). Note the min-width is set to 160px. Feel free to change this. Tip: If you want the width of the dropdown content to be as wide as the dropdown button, set the width to 100% (and overflow:auto to enable scroll on small screens). <svg>
         svg_chart = d3
@@ -186,6 +187,16 @@ function ready(error, topo) {
 
         // Defining Axis
         xAxis = d3.axisBottom().scale(x_Scale).tickFormat(d3.format(".2s"));
+
+        // Adding vertical separator
+        svg_chart.append("line")
+        .style("stroke", "black")
+        .style("stroke-width", 2)
+        .attr("class", "sep")
+        .attr("x1", origin)
+        .attr("y1", 0)
+        .attr("x2", origin)
+        .attr("y2", h_chart - xaxis_height_padding);
 
         // Creating three new groups inside the svg
         node_g_target = svg_chart.append("g").classed("target", true);
@@ -245,7 +256,10 @@ function ready(error, topo) {
         .attr("width", function (d, i) {
             return x_Scale(Math.abs(d));
         })
-        .attr("fill", function(d) {
+        .attr("fill", function(d,i) {
+            if (topk_countries[i] == selected_country) {
+                return "darkblue"
+            }
             if (d >= 0) {
                 return "green"
             }
@@ -272,6 +286,9 @@ function ready(error, topo) {
             return "Images/" + d + ".png";
         });
 
+        // Drawing the axis
+        svg_chart.append("g").attr("class", "axis").attr("transform", "translate(" + origin + "," + (h_chart - xaxis_height_padding) + ")").call(xAxis);
+
         //Adding a red mark at the kyoto reduction emission goal of country
         node_g_mark
         .selectAll(".goal")
@@ -279,27 +296,14 @@ function ready(error, topo) {
         .enter()
         .append("rect")
         .attr("y", function (d, i) {
-            return y_Scale(i);
+            return y_Scale(i) - 1;
         })
         .attr("x", function (d) { return origin + x_Scale(d) - width_mark})
-        .attr("height", y_Scale.bandwidth())
+        .attr("height", y_Scale.bandwidth() + 2)
         .attr("width", function (d) {
             return width_mark;
         })
         .attr("fill", "red");
-
-        // Drawing the axis
-        svg_chart.append("g").attr("class", "axis").attr("transform", "translate(" + origin + "," + (h_chart - xaxis_height_padding) + ")").call(xAxis);
-
-        // Adding vertical separator
-        svg_chart.append("line")
-        .style("stroke", "black")
-        .style("stroke-width", 2)
-        .attr("class", "sep")
-        .attr("x1", origin)
-        .attr("y1", 0)
-        .attr("x2", origin)
-        .attr("y2", h_chart - xaxis_height_padding);
 
         // Adding x label
         svg_chart.append("text")
@@ -312,18 +316,26 @@ function ready(error, topo) {
     }
     
     // Function to update the plot when the user changes the parameters thanks to the dropdown button
-    function update(year, k_new, LULUCF) {
+    function update() {
+        
+        // Choose target depending on the year:
+        if (year > 2012) {
+            target = "target2"
+        }
+
+        else {
+            target = "target1"
+        }
     
         // Compare k_new with k. If different, replot the whole thing.
-
         if (k_new != k) {
             d3.selectAll("#chart > *").remove();
 
             if (LULUCF == 1) {
-                creation(year, data_GHG_LULUCF, k_new);
+                creation(year, data_GHG_LULUCF, k_new, target);
             }
             else {
-                creation(year, data_GHG_no_LULUCF, k_new)
+                creation(year, data_GHG_no_LULUCF, k_new, target)
             }
             k = k_new
             return
@@ -331,11 +343,13 @@ function ready(error, topo) {
 
         // Filtering the data loaded to keep only the k best country in year and target type
         if (LULUCF == 1) {
+            console.log(data_target[target])
             var data = ranking_reduction(year, data_GHG_LULUCF, data_target, target, k);
         }
         
         else {
-            var data = ranking_reduction(year, data_GHG_no_LULUCF, data_target, target, k);
+            console.log(data_target[target + "noLULUCF"])
+            var data = ranking_reduction(year, data_GHG_no_LULUCF, data_target, target + "noLULUCF", k);
         }
 
         let topk_countries = data[0];
@@ -397,7 +411,10 @@ function ready(error, topo) {
         .attr("width", function (d, i) {
             return x_Scale(Math.abs(d));
         })
-        .attr("fill", function(d) {
+        .attr("fill", function(d,i) {
+            if (topk_countries[i] == selected_country) {
+                return "darkblue"
+            }
             if (d >= 0) {
                 return "green"
             }
@@ -429,10 +446,10 @@ function ready(error, topo) {
         .data(topk_kyoto_goal)
         .transition()
         .attr("y", function (d, i) {
-            return y_Scale(i);
+            return y_Scale(i) - 1;
         })
         .attr("x", function (d) { return origin + x_Scale(d) - width_mark})
-        .attr("height", y_Scale.bandwidth())
+        .attr("height", y_Scale.bandwidth() + 2)
         .attr("width", function (d) {
             return width_mark;
         })
@@ -446,26 +463,47 @@ function ready(error, topo) {
 
     // Event listener to update the plot when user changes some parameters
     d3.selectAll(".button").on("change", function(d) {
-        let year = d3.select("#select_year_Button").property("value");
+        year = d3.select("#select_year_Button").property("value");
 
-        let LULUCF = d3.select("#select_LULUCF_Button").property("value");
+        LULUCF = d3.select("#select_LULUCF_Button").property("value");
 
-        //TODO: See if I can come with a way to not remove the whole chart when updating k
-        let k_new = d3.select("#select_k_Button").property("value")
-        update(year, k_new, LULUCF)
+        //TODO: See if I can come with a way to not remove the whole chart when updating k (a bonus)
+        k_new = d3.select("#select_k_Button").property("value")
+
+        update()
     })
+
+    // plot line based on selected country
+	$('#countryDropdown li').on('click', function(){
+		selected_country = $(this).text();
+        console.log(selected_country)
+		update();
+	});
 
     // Plotting:
 
-    creation(year, data_GHG_no_LULUCF, k);
+    creation(year, data_GHG_no_LULUCF, k, target);
 }
 
 
-//TODO: pointage du doigt -> best 15 and 5 worst
 
-//TODO: have an origin that is not fixed. fix the variable origin to min of all rectangles
+//TODO: have an origin that is not fixed. fix the variable origin to min of all rectangles (à voir)
 
-//TODO: Report + movie
+// Tuesday:
+//TODO: pointage du doigt -> best 15 and 5 worst IV/
+//TODO: link with Dora's slider
+//TODO: Story telling (watch video). Francis' slide. Headlines!
 
-//TODO: change target after X year
+// Wednesday:
+//TODO: End story telling and CSS nice
+//TODO: Pimp the chart (space between flags, axis, colors,... )
+//TODO: Start writting report
+
+//Thursday:
+//TODO: Finish writing report
+//TODO: Shoot movie
+
+//Friday:
+//TODO: report end
+
 
