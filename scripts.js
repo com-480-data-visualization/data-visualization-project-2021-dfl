@@ -8474,6 +8474,49 @@ function loadGasByCountry(country, gas) {
 
 
 function displayMap() {
+
+	function createMapClick(year) {
+		// The svg
+		let svg = d3.select("#my_dataviz"),
+		width = +svg.attr("width"),
+		height = +svg.attr("height");
+		
+		// Map and projection
+		let projection = d3.geoEquirectangular() 
+			.scale(100);
+		let path = d3.geoPath().projection(projection);
+		// Data and color scale
+		let data = d3.map();
+		let color = d3.scaleSequential()
+					  .domain([0, 2000000])
+					  .interpolator(d3.interpolateYlGnBu);
+		
+		
+		// Load external data and boot
+		d3.queue()
+			.defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+			.defer(d3.csv, "https://raw.githubusercontent.com/DAL12/Files/master/ghg" + year + ".csv", function(d) { data.set(d.code, +d.emission);})
+			.await(ready);
+		
+		function ready(error, topo) {
+		
+			if (error) throw error;
+		
+			// Draw the map
+			svg.append("g") 
+			.selectAll("path")
+			.data(topo.features)
+			.enter()
+			.append("path")
+				// draw each country
+				.attr("d", path)
+				// set the color of each country
+				.attr("fill", function (d) {
+				d.total = data.get(d.id) || 0;
+				return color(d.total);
+				}).style("stroke", "white");
+			}  
+	}
     // The svg
     let svg = d3.select("#my_dataviz"),
         width = +svg.attr("width"),
@@ -8488,20 +8531,20 @@ function displayMap() {
     // Data and color scale
     let data = d3.map();
     let color = d3.scaleSequential()
-                  .domain([0, 500000000])
+                  .domain([0, 2000000])
                   .interpolator(d3.interpolateYlGnBu);
     
     
     // Load external data and boot
     d3.queue()
         .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-        .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function(d) { data.set(d.code, +d.pop); })
+        .defer(d3.csv, "https://raw.githubusercontent.com/DAL12/Files/master/ghg1990.csv", function(d) { data.set(d.code, +d.emission); })
         .await(ready);
     
     // Time slider
     
     var dataTime = d3.range(0, 10).map(function(d) {
-    return new Date(1995 + d, 10, 3);
+    return new Date(1990 + d, 10, 3);
     });
     
     var sliderTime = d3
@@ -8512,7 +8555,13 @@ function displayMap() {
                     .width(600)
                     .tickFormat(d3.timeFormat('%Y'))
                     .tickValues(dataTime)
-                    .default(new Date(1998, 10, 3))
+                    .default(new Date(1990, 10, 3))
+					.on('onchange', val => {switchPlots(d3.timeFormat('%Y')(val));});
+
+	function switchPlots(time) {
+		console.log(time)
+		createMapClick(time)
+	}
     
     var gTime = d3
                 .select('div#slider-time')
