@@ -52,7 +52,7 @@ function ranking_reduction(year, reduction_emission_dataset, kyoto_data, target,
     Function reducing the csv loaded before to focus on the year, the type of emission,
     the kyoto data target type, and the number k of best country that the user selected.
 
-    It returns the ten k top countries, alongside with their respective emission reduction 
+    It returns the top k countries and worst k countries, alongside with their respective emission reduction 
     as well as their goal.
     */
     const topk_countries = [];
@@ -64,7 +64,7 @@ function ranking_reduction(year, reduction_emission_dataset, kyoto_data, target,
 
     Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
    {
-      if(ind < k){
+      if(ind < k | ind >= Object.keys(data).length - k){
          topk_countries.push(key);
          topk_reduction.push(data[key]);
          topk_kyoto_goal.push(kyoto_data[target][key]);
@@ -78,7 +78,7 @@ function ranking_reduction(year, reduction_emission_dataset, kyoto_data, target,
 
    Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
    {
-      if(ind < k){
+      if(ind < k | ind >= Object.keys(data).length - k){
          topk_countries.push(key);
          topk_reduction.push(0);
          topk_kyoto_goal.push(kyoto_data[target][key]);
@@ -87,6 +87,7 @@ function ranking_reduction(year, reduction_emission_dataset, kyoto_data, target,
 });
    }
 
+   console.log(topk_countries.length)
    return [topk_countries, topk_reduction, topk_kyoto_goal];
 
 }
@@ -124,7 +125,7 @@ function ready(error, topo) {
     let width_mark = 1;
     let target = "target1noLULUCF"; 
     let year = 1990; //default of the dropdown menu is 1990
-    let k = Object.keys(data_target[target]).length;
+    let k = Object.keys(data_target[target]).length/2;
 
      // Creating a Dropdown Menu for choosing the year
      d3.select("#select_year_Button")
@@ -138,7 +139,7 @@ function ready(error, topo) {
    // Creating a Dropdown Menu for choosing the number of countries to display
    d3.select("#select_k_Button")
      .selectAll('myOptions')
-     .data(d3.range(Object.keys(data_target[target]).length, 0, -1))
+     .data(d3.range(Object.keys(data_target[target]).length / 2, 0, -1))
      .enter()
      .append('option')
      .text(function (d) { return d; })
@@ -158,7 +159,7 @@ function ready(error, topo) {
     let y_Scale = d3.scaleBand().rangeRound([0, h_chart - xaxis_height_padding - 3]).paddingInner(0.35);
     
 
-    function creation (year, data_GHG, k, target) {
+    function creation (data_GHG) {
 
         // Creating SVG for the ranking plot:The .dropdown-content class holds the actual dropdown menu. It is hidden by default, and will be displayed on hover (see below). Note the min-width is set to 160px. Feel free to change this. Tip: If you want the width of the dropdown content to be as wide as the dropdown button, set the width to 100% (and overflow:auto to enable scroll on small screens). <svg>
         svg_chart = d3
@@ -330,14 +331,15 @@ function ready(error, topo) {
         // Compare k_new with k. If different, replot the whole thing.
         if (k_new != k) {
             d3.selectAll("#chart > *").remove();
-
+            k = k_new
             if (LULUCF == 1) {
-                creation(year, data_GHG_LULUCF, k_new, target);
+                creation(data_GHG_LULUCF);
             }
             else {
-                creation(year, data_GHG_no_LULUCF, k_new, target)
+                console.log("here")
+                console.log(k_new)
+                creation(data_GHG_no_LULUCF)
             }
-            k = k_new
             return
         }
 
@@ -482,7 +484,7 @@ function ready(error, topo) {
 
     // Plotting:
 
-    creation(year, data_GHG_no_LULUCF, k, target);
+    creation(data_GHG_no_LULUCF);
 }
 
 
