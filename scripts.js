@@ -301,11 +301,17 @@ function loadGasByCountry(country, gas) {
 
 function displayMap() {
 
+	width = 800;
+	height = 450;
+
 	function createMapClick(year) {
+		
 		// The svg
-		let svg = d3.select("#my_dataviz"),
-		width = +svg.attr("width"),
-		height = +svg.attr("height");
+		var svg = d3.select("#map-cont")
+				.append("svg")
+				.attr("id", "my_dataviz")
+				.attr("width", width)
+				.attr("height", height);
 		
 		// Map and projection
 		let projection = d3.geoEquirectangular() 
@@ -327,9 +333,22 @@ function displayMap() {
 		function ready(error, topo) {
 		
 			if (error) throw error;
-		
+
 			// Draw the map
-			svg.append("g") 
+			const g = svg.append("g")
+
+			const zoom = d3.zoom()
+			.scaleExtent([1, 8])
+		    .on('zoom', zoomed);
+
+			svg.call(zoom);
+
+			function zoomed() {
+				g.selectAll('path')
+				 .attr('transform', d3.event.transform);
+			}
+
+			g 
 			.selectAll("path")
 			.data(topo.features)
 			.enter()
@@ -338,38 +357,29 @@ function displayMap() {
 				.attr("d", path)
 				// set the color of each country
 				.attr("fill", function (d) {
-				d.total = data.get(d.id) || 0;
-				return color(d.total);
-				}).style("stroke", "white");
-			}  
+				if (data.get(d.id)) {
+					return color(data.get(d.id));
+				}
+				else {
+					return d3.rgb(220,220,220);
+				}
+				}).style("stroke", "white")
+				.on("click", function(d, i) {
+					// TODO francis/loic call here the functions that take the clicked country data
+				});
+			} 
+			
 	}
-    // The svg
-    let svg = d3.select("#my_dataviz"),
-        width = +svg.attr("width"),
-        height = +svg.attr("height");
-    
-    // Map and projection
-    let projection = d3.geoEquirectangular() 
-        .scale(100);
-        //.center([0,20])
-        //.translate([width / 2, height / 2]);
-    let path = d3.geoPath().projection(projection);
-    // Data and color scale
-    let data = d3.map();
-    let color = d3.scaleSequential()
-                  .domain([0, 2000000])
-                  .interpolator(d3.interpolateYlGnBu);
-    
-    
-    // Load external data and boot
-    d3.queue()
-        .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-        .defer(d3.csv, "https://raw.githubusercontent.com/DAL12/Files/master/ghg1990.csv", function(d) { data.set(d.code, +d.emission); })
-        .await(ready);
+
+	let color = d3.scaleSequential()
+					  .domain([0, 2000000])
+					  .interpolator(d3.interpolateYlGnBu);
+
+	createMapClick(1990) 
     
     // Time slider
     
-    var dataTime = d3.range(0, 10).map(function(d) {
+    var dataTime = d3.range(0, 29).map(function(d) {
     return new Date(1990 + d, 10, 3);
     });
     
@@ -378,14 +388,14 @@ function displayMap() {
                     .min(d3.min(dataTime))
                     .max(d3.max(dataTime))
                     .step(1000 * 60 * 60 * 24 * 365)
-                    .width(600)
+                    .width(700)
                     .tickFormat(d3.timeFormat('%Y'))
                     .tickValues(dataTime)
                     .default(new Date(1990, 10, 3))
 					.on('onchange', val => {switchPlots(d3.timeFormat('%Y')(val));});
 
 	function switchPlots(time) {
-		// console.log(time)
+		d3.select("#map-cont").select("#my_dataviz").remove();
 		createMapClick(time)
 	}
     
@@ -400,24 +410,7 @@ function displayMap() {
     gTime.call(sliderTime);
     
     
-    function ready(error, topo) {
-    
-        if (error) throw error;
-    
-        // Draw the map
-        svg.append("g") 
-        .selectAll("path")
-        .data(topo.features)
-        .enter()
-        .append("path")
-            // draw each country
-            .attr("d", path)
-            // set the color of each country
-            .attr("fill", function (d) {
-            d.total = data.get(d.id) || 0;
-            return color(d.total);
-            }).style("stroke", "white");
-        }   
+	//
     
     // legend function
     

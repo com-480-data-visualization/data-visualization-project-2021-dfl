@@ -50,11 +50,13 @@ body {
 }
 
 #k1 {
-  margin-left: 240px;
+  margin-left: 625px;
+  font-size: 0.8rem;
 }
 
 #k2 {
-  margin-left: 190px;
+  margin-left: 45px;
+  font-size: 0.8rem;
 }
 
 .current {
