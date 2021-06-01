@@ -1,13 +1,17 @@
 /* 
 Author: Loïc Busson
 Goal: Bar Chart Ranking for Data Visualization Project
-Last Modified: 31/05/2021
+Last Modified: 01/06/2021
 
 Inspired by 2021 EPFL Data Visualization lectures 
 and Scott Murray's book: Interactive Data Visualization for the Web.
 */ 
 
-// Creating a function "run" to keep the variables local.
+/*
+The goal of this .js file is to build and update the ranking bar chart of the website.
+*/
+
+
 function main() {
 
     //////////////////////////////////
@@ -15,9 +19,9 @@ function main() {
     //////////////////////////////////
 
     // Initializing objects to save csv content
-    let data_target = {};
-    let data_GHG_LULUCF = {};
-    let data_GHG_no_LULUCF = {};
+    let data_target = {}; // will store the reduction emission target of each country
+    let data_GHG_LULUCF = {}; //will store the reduction emission (compared to 1990) achieved for every year (and every country) with LULUCF
+    let data_GHG_no_LULUCF = {}; //will store the reduction emission (compared to 1990) achieved for every year (and every country) without LULUCF
     let years = []
 
     // Creating an object inside data_target for each type of target
@@ -36,7 +40,7 @@ function main() {
     // Reading csv and pouring their content in their respect data object
     d3.queue()
             .defer(d3.csv, "data/Kyoto_targets_copy.csv", function(d) {
-                data_target["target1"][d.Party] = -parseFloat(d.target1); // minus to convert it to a "reduction"
+                data_target["target1"][d.Party] = -parseFloat(d.target1); // minus to convert it to a "reduction" in emission
                 data_target["target1noLULUCF"][d.Party] = -parseFloat(d.target1no);
                 data_target["target2"][d.Party] = -parseFloat(d.target2);
                 data_target["target2noLULUCF"][d.Party] = -parseFloat(d.target2no);})
@@ -53,53 +57,6 @@ function main() {
 
         })
             .await(ready); // Once the loading is over, we enter the ready function that takes care of the plotting
-    
-    
-    //////////////////////////////////
-    ////////RANKING FUNCTION//////////
-    //////////////////////////////////
-
-    function ranking_reduction(year, reduction_emission_dataset, kyoto_data, target, k) {
-        /* 
-        Function reducing the csv loaded before to focus on the year, the type of emission,
-        the kyoto data target type, and the number k of best country (and worst country) that the user selected.
-
-        It returns the top k countries and worst k countries, alongside with their respective emission reduction 
-        as well as their goal.
-        */
-        const topk_countries = [];
-        const topk_reduction = [];
-        const topk_kyoto_goal = [];
-
-        if (year > 1990) {
-        let data = reduction_emission_dataset[year];
-
-        Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
-    {
-        if(ind < k | ind >= Object.keys(data).length - k){
-            topk_countries.push(key);
-            topk_reduction.push(data[key]);
-            topk_kyoto_goal.push(kyoto_data[target][key]);
-
-        }
-    });
-    }
-
-    else {
-    let data = kyoto_data[target];
-
-    Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
-    {
-        if(ind < k | ind >= Object.keys(data).length - k){
-            topk_countries.push(key);
-            topk_reduction.push(0);
-            topk_kyoto_goal.push(kyoto_data[target][key]);
-
-    }
-    });
-    }
-    return [topk_countries, topk_reduction, topk_kyoto_goal];
-    }
 
     //////////////////////////////////
     ////////PLOTTING FUNCTION/////////
@@ -113,15 +70,15 @@ function main() {
 
 
         // Console log for codding purposes (TODO: Delete them at the end)
-        console.log("target", data_target)
-        console.log("LULUCF", data_GHG_LULUCF)
-        console.log("noLULUCF", data_GHG_no_LULUCF)
+        // console.log("target", data_target)
+        // console.log("LULUCF", data_GHG_LULUCF)
+        // console.log("noLULUCF", data_GHG_no_LULUCF)
 
         //////////////////////////////////
         ////////DEFINING VARIABLES////////
         //////////////////////////////////
 
-        // Definition of global variables and SVG parameters
+        // Definition of global variables
         let svg_chart;
         let node_g_target;
         let node_g_em;
@@ -131,18 +88,19 @@ function main() {
         let selected_country;
         let k_new;
         let LULUCF;
-        let w_chart = 1600;
-        let h_chart = 700;
+        let target = "target1noLULUCF"; //default of the dropdown menu
+        let year = 1990; //default of the dropdown menu
+        let selected_data = data_GHG_no_LULUCF //default of the dropdown menu
+        let k = Object.keys(data_target[target]).length/2; //default of the dropdown menu
+
+        // Definition SVG parameters
+        let w_chart = document.getElementById('chart').clientWidth - 2 * 16 //take into account the 1rem padding of svg
+        let h_chart = 1000
         let xaxis_height_padding = h_chart/15;
         let padding_chart = h_chart/10;
         let paddingx_label = 2;
-        let flag_width = w_chart / 25;
         let origin = w_chart / 2;
-        let img_origin = 0;
         let width_mark = 1;
-        let target = "target1noLULUCF"; //default of the dropdown menu
-        let year = 1990; //default of the dropdown menu
-        let k = Object.keys(data_target[target]).length/2; //default of the dropdown menu
         let x_Scale = d3.scaleLinear().range([- (w_chart/2 - padding_chart), w_chart/2 - padding_chart]);
         let y_Scale = d3.scaleBand().rangeRound([0, h_chart - xaxis_height_padding - 3]).paddingInner(0.35);
 
@@ -177,11 +135,58 @@ function main() {
         .text(function (d) { return d; })
         .attr("value", function (d, i) { return i; })
 
-        function creation (data_GHG) {
+        //////////////////////////////////
+        ////////RANKING FUNCTION//////////
+        //////////////////////////////////
+        
+        function ranking_reduction() {
+            /* 
+            Function reducing the csv loaded before to focus on the year, the type of emission,
+            the kyoto data target type, and the number k of best country (and worst country) that the user selected.
 
-            ///////////////////////////////////
-            ////INITIALIZATION OF THE CHART////
-            ///////////////////////////////////
+            It returns the top k countries and worst k countries, alongside with their respective emission reduction 
+            as well as their goal.
+            */
+
+            const topk_countries = [];
+            const topk_reduction = [];
+            const topk_kyoto_goal = [];
+
+            if (year > 1990) {
+                let data = selected_data[year];
+                Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
+                {
+                    if(ind < k | ind >= Object.keys(data).length - k){
+                        topk_countries.push(key);
+                        topk_reduction.push(data[key]);
+                        topk_kyoto_goal.push(data_target[target][key]);
+
+                    }
+                });
+            }
+
+            else {
+                let data = data_target[target];
+                Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
+                {
+                    if(ind < k | ind >= Object.keys(data).length - k){
+                        topk_countries.push(key);
+                        topk_reduction.push(0);
+                        topk_kyoto_goal.push(data_target[target][key]);
+
+                    }
+                });
+            }
+
+            return [topk_countries, topk_reduction, topk_kyoto_goal];
+        }
+
+
+        ///////////////////////////////////
+        ////INITIALIZATION OF THE CHART////
+        ///////////////////////////////////
+
+        function creation () {
 
             // Creating SVG for the ranking plot:
             svg_chart = d3
@@ -190,18 +195,18 @@ function main() {
             .attr("width", w_chart)
             .attr("height", h_chart);
 
-            // Filtering the data loaded to keep only the k best country in 1990 and target type
-            // Note that the best ones in 1990 are the ones with the k highest (and k worst) goals
-            let data = ranking_reduction(year, data_GHG, data_target, target, k);
+            // Filtering the data loaded to keep only the k best (and k worst) country in 1990 and target type.
+            // Note that the "best" ones in 1990 are the ones with the k highest goals.
+            let data = ranking_reduction();
             let topk_countries = data[0];
             let topk_reduction = data[1];
             let topk_kyoto_goal = data[2];
 
 
             // Console log for codding purposes (TODO: Delete them at the end)
-            console.log(topk_countries)
-            console.log(topk_kyoto_goal)
-            console.log(topk_reduction)
+            // console.log(topk_countries)
+            // console.log(topk_kyoto_goal)
+            // console.log(topk_reduction)
 
             // Changing domain
             x_Scale.domain([-d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)]),d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)])])
@@ -300,10 +305,9 @@ function main() {
                 return y_Scale(i);
             })
             .attr("x", function (d,i) {
-                return origin + Math.max(x_Scale(topk_reduction[i]), x_Scale(topk_kyoto_goal[i]), 0)
+                return origin + Math.max(x_Scale(topk_reduction[i]), x_Scale(topk_kyoto_goal[i]), 0) + y_Scale.bandwidth()/5
             })
             .attr("height", y_Scale.bandwidth())
-            .attr("width", flag_width)
             .attr("xlink:href", function (d) {
                 return "Images/" + d + ".png";
             });
@@ -344,57 +348,53 @@ function main() {
         // Function to update the plot when the user changes the parameters thanks to the dropdown button
         function update() {
             
-            // Choose target depending on the year:
+            // Update the target depending on the year:
             if (year > 2012) {
-                target = "target2"
+                target = "target2";
             }
 
             else {
-                target = "target1"
-            }
-        
-            // Compare k_new with k. If different, replot the whole thing.
-            if (k_new != k) {
-                d3.selectAll("#chart > *").remove();
-                k = k_new
-                if (LULUCF == 1) {
-                    creation(data_GHG_LULUCF);
-                }
-                else {
-                    console.log("here")
-                    console.log(k_new)
-                    creation(data_GHG_no_LULUCF)
-                }
-                return
+                target = "target1";
             }
 
-            // Filtering the data loaded to keep only the k best (and k worst) country in year and target type
+            // Update the selected dataset:
             if (LULUCF == 1) {
-                console.log(data_target[target])
-                var data = ranking_reduction(year, data_GHG_LULUCF, data_target, target, k);
+                selected_data = data_GHG_LULUCF;
             }
             
             else {
-                console.log(data_target[target + "noLULUCF"])
-                var data = ranking_reduction(year, data_GHG_no_LULUCF, data_target, target + "noLULUCF", k);
+                selected_data = data_GHG_no_LULUCF;
+                target = target + "noLULUCF"
+            }
+        
+            // In case of a change of k: replot the chart
+            if (k_new != k) {
+                d3.selectAll("#chart > *").remove();
+                k = k_new;
+                creation();
             }
 
+            //console.log(target)
+            // with the new variables target, selected_data and k: find the new ranking
+            let data = ranking_reduction();
             let topk_countries = data[0];
             let topk_reduction = data[1];
             let topk_kyoto_goal = data[2];
 
 
             // Console log for codding purposes (TODO: Delete them at the end)
-            console.log(topk_countries)
-            console.log(topk_kyoto_goal)
-            console.log(topk_reduction)
-
+            // console.log(topk_countries)
+            // console.log(topk_kyoto_goal)
+            // console.log(topk_reduction)
             
             // Redefining Scales
             x_Scale.domain([-d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)]),d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)])])
             y_Scale.domain(d3.range(topk_kyoto_goal.length));
 
-            //Changing the rectangles inside the corresponding group (here: target)
+            // Redefining range of x so that flags fit
+            x_Scale.range([- (w_chart/2 - padding_chart - 2 * y_Scale.bandwidth()), w_chart/2 - padding_chart - 2 * y_Scale.bandwidth()]);
+
+            //Update the rectangles inside the corresponding group (here: target)
             node_g_target
             .selectAll("rect")
             .data(topk_kyoto_goal)
@@ -417,7 +417,7 @@ function main() {
             })
             .attr("fill", "gray");
 
-            //Changing the rectangles inside the corresponding group (here: em)
+            //Update the rectangles inside the corresponding group (here: em)
             node_g_em
             .selectAll("rect")
             .data(topk_reduction)
@@ -450,7 +450,7 @@ function main() {
                 }
             });
 
-            //Changing the flags inside the corresponding group (here: img)
+            //Update the flags inside the corresponding group (here: img)
             node_g_flags
             .selectAll("image")
             .data(topk_countries)
@@ -459,10 +459,9 @@ function main() {
                 return y_Scale(i);
             })
             .attr("x", function (d,i) {
-                return origin + Math.max(x_Scale(topk_reduction[i]), x_Scale(topk_kyoto_goal[i]), 0)
+                return origin + Math.max(x_Scale(topk_reduction[i]), x_Scale(topk_kyoto_goal[i]), 0) + y_Scale.bandwidth()/5
             })
             .attr("height", y_Scale.bandwidth())
-            .attr("width", flag_width)
             .attr("xlink:href", function (d) {
                 return "Images/" + d + ".png";
             });
@@ -482,7 +481,7 @@ function main() {
             })
             .attr("fill", "red");
 
-            // Drawing the axis
+            // Update the axis
             svg_chart.select(".axis").transition().call(xAxis);
 
         }
@@ -492,26 +491,28 @@ function main() {
         //////////////////////////////////
 
         // Event listener to update the chart when the user changes some parameters
-        d3.selectAll(".button").on("change", function(d) {
+        d3.selectAll(".button").on("change", function() {
+
             year = d3.select("#select_year_Button").property("value");
-
             LULUCF = d3.select("#select_LULUCF_Button").property("value");
-
-            //TODO: See if I can come with a way to not remove the whole chart when updating k (a bonus)
-            k_new = d3.select("#select_k_Button").property("value")
-
+            k_new = d3.select("#select_k_Button").property("value");
             update()
         })
 
         // Event listener to update the chart when the user selects a country on the plot above
         $('#countryDropdown li').on('click', function(){
             selected_country = $(this).text();
-            console.log(selected_country)
+            // console.log(selected_country)
             update();
         });
 
+        d3.select(".slider").on("onchange", function() {
+
+            year = d3.select(this).property("value");
+            // console.log(typeof year);
+        })
         // Calling the creation function to initialize the chart:
-        creation(data_GHG_no_LULUCF);
+        creation();
     }
 }
 
@@ -522,7 +523,6 @@ main();
 
 // Tuesday:
 //TODO: link with Dora's slider
-//TODO: Story telling (watch video). Francis' slide. Headlines!
 
 // Wednesday:
 //TODO: End story telling and CSS nice
@@ -535,5 +535,8 @@ main();
 
 //Friday:
 //TODO: report end
+
+
+//TODO: if black bar -> put the flag on the left?
 
 
