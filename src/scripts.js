@@ -363,6 +363,7 @@ function displayMap() {
 					return d3.rgb(220,220,220);
 				}
 				}).style("stroke", "white")
+				.classed("clickable", true)
 				.on("click", function(d, i) {
 					// load Area Chart for country clicked on map
 					loadAreaChart(countryCodeName[d.id]);
