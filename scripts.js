@@ -1,12 +1,11 @@
 let dataByGas = {};
+let countryCodeName = {};
 
 function displayAreaChart() {
 	const PATH = "data/unfcc/time_series"
 
 	// prepare the data here
 	d3.queue()
-	// Time Series - CO₂ total with LULUCF, in kt.csv
-	
 	.defer(d3.csv, PATH + "/data_by_gas/Time Series - CO₂ total with LULUCF, in kt.csv", function(row) {
 			dataByGas[row.Party] = {"CO2_LULU": []};
 			for (const key in row) {
@@ -15,7 +14,6 @@ function displayAreaChart() {
 				}		
 			}
 		})
-		// Time Series - CO₂ total without LULUCF, in kt.csv
 		.defer(d3.csv, PATH + "/data_by_gas/Time Series - CO₂ total without LULUCF, in kt.csv", function(row) {
 			dataByGas[row.Party]["CO2"]= [];
 			for (const key in row) {
@@ -24,7 +22,6 @@ function displayAreaChart() {
 				}		
 			}
 		})
-		// Time Series - CH₄ total with LULUCF, in kt CO₂ equivalent.csv
 		.defer(d3.csv, PATH + "/data_by_gas/Time Series - CH₄ total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["CH4_LULU"]= [];
 			for (const key in row) {
@@ -33,7 +30,6 @@ function displayAreaChart() {
 				}		
 			}
 		})
-		// Time Series - CH₄ total without LULUCF, in kt CO₂ equivalent.csv
 		.defer(d3.csv, PATH + "/data_by_gas/Time Series - CH₄ total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["CH4"]= [];
 			for (const key in row) {
@@ -42,7 +38,6 @@ function displayAreaChart() {
 				}		
 			}
 		})
-		// Time Series - N₂O total with LULUCF, in kt CO₂ equivalent.csv
 		.defer(d3.csv, PATH + "/data_by_gas/Time Series - N₂O total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["N20_LULU"]= [];
 			for (const key in row) {
@@ -51,7 +46,6 @@ function displayAreaChart() {
 				}		
 			}
 		})
-		// Time Series - N₂O total without LULUCF, in kt CO₂ equivalent.csv
 		.defer(d3.csv, PATH + "/data_by_gas/Time Series - N₂O total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["N2O"]= [];
 			for (const key in row) {
@@ -59,6 +53,10 @@ function displayAreaChart() {
 					dataByGas[row.Party]["N2O"].push(row[key]);
 				}		
 			}
+		})
+		.defer(d3.csv, "data/country_codes.csv", function(row) {
+			// ISO 3166-1 alpha-3 codes data from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+			countryCodeName[row.Code] = row.Name;
 		})
 		.await(ready); // Once the loading is over, we enter the ready function that takes care of the plotting
 	
@@ -70,7 +68,7 @@ function displayAreaChart() {
 
 			let countries = getAllCountries(dataByGas);
 			let select = document.getElementById("countryDropdown"); 
-		
+	
 			// populate dropdown menu
 			for(var i = 0 ; i < countries.length ; i++) {
 					var opt = countries[i];
@@ -83,7 +81,8 @@ function displayAreaChart() {
 					li.appendChild(link);
 					select.appendChild(li);
 			}
-		
+			
+			// load default country when site loads
 			country = "United States of America";
 			loadAreaChart(country);
 		
@@ -365,7 +364,8 @@ function displayMap() {
 				}
 				}).style("stroke", "white")
 				.on("click", function(d, i) {
-					// TODO francis/loic call here the functions that take the clicked country data
+					// load Area Chart for country clicked on map
+					loadAreaChart(countryCodeName[d.id]);
 				});
 			} 
 			
@@ -528,6 +528,11 @@ function mapProgressBar() {
 
 
 function loadAreaChart(country) {
+
+	if (!(country in dataByGas)) {
+		alert("Sorry, emissions data for " + country + " is not available.");
+		return;
+	}
 
 	d3.selectAll("#plot > *").remove();
 
