@@ -90,17 +90,17 @@ function main() {
         let LULUCF;
         let target = "target1noLULUCF"; //default of the dropdown menu
         let year = 1990; //default of the dropdown menu
-        let selected_data = data_GHG_no_LULUCF //default of the dropdown menu
+        let selected_data = data_GHG_no_LULUCF; //default of the dropdown menu
         let k = Object.keys(data_target[target]).length/2; //default of the dropdown menu
 
         // Definition SVG parameters
-        let w_chart = document.getElementById('chart').clientWidth - 2 * 16 //take into account the 1rem padding of svg
-        let h_chart = 1000
+        let w_chart = document.getElementById('chart').clientWidth - 2 * 16 ;//take into account the 1rem padding of svg
+        let h_chart = 800;
         let xaxis_height_padding = h_chart/15;
         let padding_chart = h_chart/10;
         let paddingx_label = 10;
         let origin = w_chart / 2;
-        let width_mark = 1;
+        let width_mark = 2;
         let x_Scale = d3.scaleLinear().range([- (w_chart/2 - padding_chart), w_chart/2 - padding_chart]);
         let y_Scale = d3.scaleBand().rangeRound([0, h_chart - xaxis_height_padding - 3]).paddingInner(0.35);
 
@@ -120,7 +120,7 @@ function main() {
         // Creating a Dropdown Menu for choosing the number of countries to display
         d3.select("#select_k_Button")
         .selectAll('myOptions')
-        .data(d3.range(Object.keys(data_target[target]).length / 2, 2, -1))
+        .data(d3.range(Object.keys(data_target[target]).length / 2, 9, -1))
         .enter()
         .append('option')
         .text(function (d) { return d; })
@@ -231,10 +231,16 @@ function main() {
             node_g_flags = svg_chart.append("g").classed("img", true);
             node_g_mark = svg_chart.append("g").classed("goal", true);
 
+            node_g_legend = svg_chart.append("g").classed("legend", true)
+            // .attr("width", 3.5 * y_Scale.bandwidth())
+            // .attr("height", 5 * y_Scale.bandwidth())
+
+
             //at this stage, we have <svg>
             //                             <g class="target" .... </g>
             //                             <g class="em" .... </g>
             //                             <g class="img" ....</g>
+            //                             <g class="legend" .... </g>
             //                       </svg>
 
             //Adding rectangles inside the corresponding group (here: target)
@@ -339,8 +345,62 @@ function main() {
             .attr("font-size", '20px')
             .text("Reduction in GHG emission (in kt CO2 equivalent)");
 
+            // Adding the legend
+            node_g_legend.append("rect")
+            .attr("y", 45)
+            .attr("x", 24)
+            .attr("height", 24)
+            .attr("width", 72)
+            .attr("fill", "gray");
+
+            node_g_legend.append("rect")
+            .attr("y", 44)
+            .attr("x", 95)
+            .attr("height", 26)
+            .attr("width", 2)
+            .attr("fill", "red");
+
+            node_g_legend.append("rect")
+            .attr("y", 82)
+            .attr("x", 24)
+            .attr("height", 24)
+            .attr("width", 72)
+            .attr("fill", "black");
+
+            node_g_legend.append("rect")
+            .attr("y", 119)
+            .attr("x", 24)
+            .attr("height", 24)
+            .attr("width", 72)
+            .attr("fill", "green");
+
+            node_g_legend.append("text")
+            .attr("x", 120)
+            .attr("y", 63)
+            .attr("font-size", '20px')
+            .text("Kyoto GHG Emission Reduction Target");
+
+            node_g_legend.append("text")
+            .attr("x", 120)
+            .attr("y", 100)
+            .attr("font-size", '20px')
+            .text("Increase in GHG emission since 1990");
+
+            node_g_legend.append("text")
+            .attr("x", 120)
+            .attr("y", 137)
+            .attr("font-size", '20px')
+            .text("Decrease in GHG emission since 1990");
+
+            node_g_legend.append("rect")
+            .attr("y", 8)
+            .attr("x", 0)
+            .attr("height", 185)
+            .attr("width", 530)
+            .attr("fill", "none")
+            .attr("stroke", "black");
         }
-        
+
         //////////////////////////////////
         ////////UPDATING THE GRAPH////////
         //////////////////////////////////
