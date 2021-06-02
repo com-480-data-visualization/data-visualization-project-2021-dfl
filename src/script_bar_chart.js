@@ -39,18 +39,18 @@ function main() {
 
     // Reading csv and pouring their content in their respect data object
     d3.queue()
-            .defer(d3.csv, "data/Kyoto_targets_copy.csv", function(d) {
+            .defer(d3.csv, "data/Kyoto_targets.csv", function(d) {
                 data_target["target1"][d.Party] = -parseFloat(d.target1); // minus to convert it to a "reduction" in emission
                 data_target["target1noLULUCF"][d.Party] = -parseFloat(d.target1no);
                 data_target["target2"][d.Party] = -parseFloat(d.target2);
                 data_target["target2noLULUCF"][d.Party] = -parseFloat(d.target2no);})
-            .defer(d3.csv, "data/GHG_LULUCF_copy.csv", function(d) {
+            .defer(d3.csv, "data/GHG_LULUCF.csv", function(d) {
                 for (i = 1990; i <= 2018; i++) {
                 data_GHG_LULUCF[String(i)][d.Party] = parseFloat(d[1990]) - parseFloat(d[String(i)]); // storing the reduction compared to the year 1990
                 }
 
         })
-            .defer(d3.csv, "data/GHG_no_LULUCF_copy.csv", function(d) {
+            .defer(d3.csv, "data/GHG_no_LULUCF.csv", function(d) {
                 for (i = 1990; i <= 2018; i++) {
                 data_GHG_no_LULUCF[String(i)][d.Party] = parseFloat(d[1990]) - parseFloat(d[String(i)]);
                 }
@@ -499,18 +499,22 @@ function main() {
             update()
         })
 
+        let select = document.getElementById("countryDropdown"); 
+        console.log(select);
+
         // Event listener to update the chart when the user selects a country on the plot above
         $('#countryDropdown li').on('click', function(){
-            selected_country = $(this).text();
+            selected_country = $("#countryDropdown li").text();
             // console.log(selected_country)
             update();
         });
 
-        d3.select(".slider").on("onchange", function() {
+        // d3.select("#handle").on("change", function() {
 
-            year = d3.select(this).property("value");
-            // console.log(typeof year);
-        })
+        //     year = d3.timeFormat('%Y')(d3.select(this).property("aria-valuenow"));
+        //     console.log(year);
+        //     // console.log(typeof year);
+        // })
         // Calling the creation function to initialize the chart:
         creation();
     }
@@ -526,6 +530,7 @@ main();
 
 // Wednesday:
 //TODO: End story telling and CSS nice
+//TODO: See if I can include NaNs
 //TODO: Pimp the chart (space between flags, axis, colors,... )
 //TODO: Start writting report
 
