@@ -98,7 +98,7 @@ function main() {
         let h_chart = 800;
         let xaxis_height_padding = h_chart/15;
         let padding_chart = h_chart/10;
-        let paddingx_label = 10;
+        let paddingx_label = 5;
         let origin = w_chart / 2;
         let width_mark = 2;
         let x_Scale = d3.scaleLinear().range([- (w_chart/2 - padding_chart), w_chart/2 - padding_chart]);
