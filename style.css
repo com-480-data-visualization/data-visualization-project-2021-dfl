@@ -82,6 +82,10 @@ The various units of measurement available in CSS:
 	https://developer.mozilla.org/en-US/docs/Learn/CSS/Introduction_to_CSS/Values_and_units
 */
 
+.axis_chart {
+  font: 20px sans-serif;
+}
+
 svg {
   margin: 1rem;
 
