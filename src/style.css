@@ -126,6 +126,13 @@ svg {
   text-anchor: middle;
 }
 
+.kyoto-begining-lines {
+  stroke-width: 2;
+  stroke-dasharray: 6;
+  stroke: green;
+  fill: none;
+}
+
 .kyoto-commitment-lines {
   stroke-width: 2;
   stroke-dasharray: 6;

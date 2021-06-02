@@ -222,38 +222,87 @@ class AreaChart {
 			)
 
 		// print lines for the kyoto commitments
-		let kyto_commitment_1 = new Date(2012, 0, 1, 0, 0, 0, 0);
-		let kyto_commitment_2 = new Date(2020, 0, 1, 0, 0, 0, 0);
+		let kp_beginning = new Date(2008, 0, 1, 0, 0, 0, 0);
+		let kp_commitment_1 = new Date(2013, 0, 1, 0, 0, 0, 0);
+		let kp_commitment_2 = new Date(2020, 0, 1, 0, 0, 0, 0);
+
+
+		// Beginning of Kyoto protocol phases
+		this.svg.append("line")
+			.attr("x1", xScale(kp_beginning))  
+			.attr("y1", 0 + 30)
+			.attr("x2", xScale(kp_beginning))  
+			.attr("y2", height)
+			.attr("class", "kyoto-begining-lines")
+
+		this.svg.append("text")
+			.attr("y", 20)
+			.attr("x", function(){ return xScale(kp_beginning)})
+			.attr("class", "kyoto-commitment-labels")
+			.text("KP Beginning");
 
 		// Line for Kyoto 1st commitment
 		this.svg.append("line")
-			.attr("x1", xScale(kyto_commitment_1))  
+			.attr("x1", xScale(kp_commitment_1))  
 			.attr("y1", 0 + 30)
-			.attr("x2", xScale(kyto_commitment_1))  
+			.attr("x2", xScale(kp_commitment_1))  
 			.attr("y2", height)
 			.attr("class", "kyoto-commitment-lines")
 
 		this.svg.append("text")
 			.attr("y", 20)
-			.attr("x", function(){ return xScale(kyto_commitment_1)})
+			.attr("x", function(){ return xScale(kp_commitment_1)})
 			.attr("class", "kyoto-commitment-labels")
-			.text("Kyoto 1st commitment ");
-
+			.text("KP 1st commitment ");
 
 		// Line for Kyoto 2nd commitment
 		this.svg.append("line")
-			.attr("x1", xScale(kyto_commitment_2))
+			.attr("x1", xScale(kp_commitment_2))
 			.attr("y1", 0 + 30)
-			.attr("x2", xScale(kyto_commitment_2))
+			.attr("x2", xScale(kp_commitment_2))
 			.attr("y2", height)
 			.attr("class", "kyoto-commitment-lines")
 
 		this.svg.append("text")
 			.attr("y", 20)
-			.attr("x", function(){ return xScale(kyto_commitment_2)})
+			.attr("x", function(){ return xScale(kp_commitment_2)})
 			.attr("class", "kyoto-commitment-labels")
-			.text("Kyoto 2nd commitment");
+			.text("KP 2nd commitment");
 
+		// // Kyoto phase areas
+		// let kp_phase_1_data = [
+		// 	{y: "8000000", date: new Date(2008, 0, 1, 0, 0, 0, 0) },
+		// 	{y: "8000000", date: new Date(2013, 0, 1, 0, 0, 0, 0) }
+		// ]
+
+		// this.kp_phase_1 = this.svg.append("path")
+		// 	.datum(kp_phase_1_data)
+		// 	.attr("fill", "green")
+		// 	.attr("fill-opacity","0.1")
+		// 	.attr("stroke", "#69b3a2")
+		// 	.attr("stroke-width", 0)
+		// 	.attr("d", d3.area()
+		// 		.x(function(d) { return xScale(d.date) })
+		// 		.y0(yScale(0))
+		// 		.y1(function(d) { return yScale(d.y) })
+		// 		)
+
+		// let kp_phase_2_data = [
+		// 	{y: "8000000", date: new Date(2013, 0, 1, 0, 0, 0, 0) },
+		// 	{y: "8000000", date: new Date(2020, 0, 1, 0, 0, 0, 0) }
+		// ]
+
+		// this.kp_phase_1 = this.svg.append("path")
+		// 	.datum(kp_phase_2_data)
+		// 	.attr("fill", "green")
+		// 	.attr("fill-opacity","0.2")
+		// 	.attr("stroke", "#69b3a2")
+		// 	.attr("stroke-width", 0)
+		// 	.attr("d", d3.area()
+		// 		.x(function(d) { return xScale(d.date) })
+		// 		.y0(yScale(0))
+		// 		.y1(function(d) { return yScale(d.y) })
+		// 		)
 			
 		// create axis
 		const xAxis = d3.axisBottom(xScale);
