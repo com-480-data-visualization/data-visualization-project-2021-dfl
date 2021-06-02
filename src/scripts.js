@@ -120,7 +120,7 @@ function whenDocumentLoaded(action) {
 }
 
 
-const MARGIN = { top: 50, right: 50, bottom: 50, left: 50 };
+const MARGIN = { top: 50, right: 170, bottom: 50, left: 50 };
 
 class AreaChart {
 	constructor(svg_element_id, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country) {
@@ -132,6 +132,13 @@ class AreaChart {
 		this.co2_emissions = co2_emissions;
 		this.ch4_emissions = ch4_emissions;
 		this.n2o_emissions = n2o_emissions;
+
+		// create a list of keys
+		let keys = ["Total emissions", "CO2 emissions", "CH4 emissions", "N2O emissions"]
+
+		let areaChartColors = d3.scaleOrdinal()
+			.domain(keys)
+			.range(["#13243c", "#122f57", "#2e516f", "#3b7681"])
 
 		this.svg = d3.select('#' + svg_element_id)
 			.attr("width", width + MARGIN.left + MARGIN.right)
@@ -154,13 +161,13 @@ class AreaChart {
 			.range([height, 0]);
 
 		// scatter plot
-		this.svg.selectAll("circle")
-			.data(total_emissions)
-			.enter()
-			.append("circle")
-				.attr("r", 2) // radius
-				.attr("cx", d => xScale(d.date)) // position, rescaled
-				.attr("cy", d => yScale(d.y));
+		// this.svg.selectAll("circle")
+		// 	.data(total_emissions)
+		// 	.enter()
+		// 	.append("circle")
+		// 		.attr("r", 2) // radius
+		// 		.attr("cx", d => xScale(d.date)) // position, rescaled
+		// 		.attr("cy", d => yScale(d.y));
 			
 				
 		// line plot
@@ -177,10 +184,10 @@ class AreaChart {
 		// area plot
 		this.svg_total_emissions = this.svg.append("path")
 		.datum(this.total_emissions)
-		// .attr("data-legend",gas)
-		.attr("fill", "#13243c")
+		.attr("fill", areaChartColors("Total emissions"))
 		.attr("stroke", "#69b3a2")
 		.attr("stroke-width", 1.5)
+		.attr("class", "myArea total_emissions")
 		.attr("d", d3.area()
 			.x(function(d) { return xScale(d.date)	})
 			.y0(yScale(0))
@@ -189,10 +196,10 @@ class AreaChart {
 
 		this.svg_co2_emissions = this.svg.append("path")
 		.datum(this.co2_emissions)
-		// .attr("data-legend","CO2 emissions")
-		.attr("fill", "#122f57")
+		.attr("fill", areaChartColors("CO2 emissions"))
 		.attr("stroke", "#69b3a2")
 		.attr("stroke-width", 1.5)
+		.attr("class", "myArea co2_emissions")
 		.attr("d", d3.area()
 			.x(function(d) { return xScale(d.date) })
 			.y0(yScale(0))
@@ -201,9 +208,10 @@ class AreaChart {
 
 		this.svg_ch4_emissions = this.svg.append("path")
 		.datum(this.ch4_emissions)
-		.attr("fill", "#2e516f")
+		.attr("fill", areaChartColors("CH4 emissions"))
 		.attr("stroke", "#69b3a2")
 		.attr("stroke-width", 1.5)
+		.attr("class", "myArea ch4_emissions")
 		.attr("d", d3.area()
 			.x(function(d) { return xScale(d.date) })
 			.y0(yScale(0))
@@ -212,9 +220,10 @@ class AreaChart {
 
 		this.svg_n2o_emissions = this.svg.append("path")
 		.datum(this.n2o_emissions)
-		.attr("fill", "#3b7681")
+		.attr("fill", areaChartColors("N2O emissions"))
 		.attr("stroke", "#69b3a2")
 		.attr("stroke-width", 1.5)
+		.attr("class", "myArea n2o_emissions")
 		.attr("d", d3.area()
 			.x(function(d) { return xScale(d.date) })
 			.y0(yScale(0))
@@ -333,6 +342,60 @@ class AreaChart {
 		// 	.attr("transform","translat100,100)")
 		// 	.style("font-size","12px")
 		// 	.call(d3.legend)
+
+		//////////////////////////////
+    // HIGHLIGHT GROUP //    inspired by https://www.d3-graph-gallery.com/graph/stackedarea_template.html
+    //////////////////////////////
+
+    // What to do when one group is hovered
+    var highlight = function(d){
+      // reduce opacity of all groups
+      d3.selectAll(".myArea").style("opacity", .1)
+      // expect the one that is hovered
+      d3.select("."+d.toLowerCase().replace(/ /g,"_")).style("opacity", 1)
+    }
+
+    // And when it is not hovered anymore
+    var noHighlight = function(d){
+      d3.selectAll(".myArea").style("opacity", 1)
+    }
+
+
+		//////////////////////////////
+    // LEGEND // 	inspired by https://www.d3-graph-gallery.com/graph/stackedarea_template.html
+    //////////////////////////////
+		
+
+	// Add one dot in the legend for each name.
+		var size = 20
+		this.svg.selectAll("mydots")
+			.data(keys)
+			.enter()
+			.append("rect")
+				.attr("x", width + 40)
+				.attr("y", function(d,i){ return 140 + i*(size+15)}) // 100 is where the first dot appears. 25 is the distance between dots
+				.attr("width", size)
+				.attr("height", size)
+				.style("fill", function(d){ return areaChartColors(d)})
+				.attr("class", "area-chart-legend")
+				.on("mouseover", highlight)
+        .on("mouseleave", noHighlight)
+
+		// Add one dot in the legend for each name.
+		this.svg.selectAll("mylabels")
+			.data(keys)
+			.enter()
+			.append("text")
+				.attr("x", width + 40 + size*1.2)
+				.attr("y", function(d,i){ return 140 + i*(size+15) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+				.style("fill", function(d){ return areaChartColors(d) })
+				.text(function(d){ return d})
+				.attr("text-anchor", "left")
+				.attr("font-size", "0.8em")
+				.style("alignment-baseline", "middle")
+				.attr("class", "area-chart-legend")
+				.on("mouseover", highlight)
+        .on("mouseleave", noHighlight)
 	}
 
 	update(svg_element_id, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country) {
