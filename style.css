@@ -116,3 +116,15 @@ svg {
 .clickable {
   cursor: pointer;
 }
+
+.kyoto-commitment-labels {
+  font-size: 0.5em;
+  text-anchor: middle;
+}
+
+.kyoto-commitment-lines {
+  stroke-width: 2;
+  stroke-dasharray: 6;
+  stroke: red;
+  fill: none;
+}

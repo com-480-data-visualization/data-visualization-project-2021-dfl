@@ -141,7 +141,8 @@ class AreaChart {
 
 		this.svg = this.svg.append('g');
 
-		const x_value_range = [d3.min(total_emissions, d => d.date), d3.max(total_emissions, d => d.date)];
+		// const x_value_range = [d3.min(total_emissions, d => d.date), d3.max(total_emissions, d => d.date)];
+		const x_value_range = [d3.min(total_emissions, d => d.date), new Date(2020, 0, 1, 0, 0, 0, 0)];
 		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
 
 		const xScale = d3.scaleTime()
@@ -181,7 +182,7 @@ class AreaChart {
 		.attr("stroke", "#69b3a2")
 		.attr("stroke-width", 1.5)
 		.attr("d", d3.area()
-			.x(function(d) { return xScale(d.date) })
+			.x(function(d) { return xScale(d.date)	})
 			.y0(yScale(0))
 			.y1(function(d) { return yScale(d.y) })
 			)
@@ -220,6 +221,40 @@ class AreaChart {
 			.y1(function(d) { return yScale(d.y) })
 			)
 
+		// print lines for the kyoto commitments
+		let kyto_commitment_1 = new Date(2012, 0, 1, 0, 0, 0, 0);
+		let kyto_commitment_2 = new Date(2020, 0, 1, 0, 0, 0, 0);
+
+		// Line for Kyoto 1st commitment
+		this.svg.append("line")
+			.attr("x1", xScale(kyto_commitment_1))  
+			.attr("y1", 0 + 30)
+			.attr("x2", xScale(kyto_commitment_1))  
+			.attr("y2", height)
+			.attr("class", "kyoto-commitment-lines")
+
+		this.svg.append("text")
+			.attr("y", 20)
+			.attr("x", function(){ return xScale(kyto_commitment_1)})
+			.attr("class", "kyoto-commitment-labels")
+			.text("Kyoto 1st commitment ");
+
+
+		// Line for Kyoto 2nd commitment
+		this.svg.append("line")
+			.attr("x1", xScale(kyto_commitment_2))
+			.attr("y1", 0 + 30)
+			.attr("x2", xScale(kyto_commitment_2))
+			.attr("y2", height)
+			.attr("class", "kyoto-commitment-lines")
+
+		this.svg.append("text")
+			.attr("y", 20)
+			.attr("x", function(){ return xScale(kyto_commitment_2)})
+			.attr("class", "kyoto-commitment-labels")
+			.text("Kyoto 2nd commitment");
+
+			
 		// create axis
 		const xAxis = d3.axisBottom(xScale);
 		this.xSvgAxis = this.svg.append("g")
@@ -255,7 +290,8 @@ class AreaChart {
 		const height = 400;
 		const width = 600;
 
-		const x_value_range = [d3.min(total_emissions, d => d.date), d3.max(total_emissions, d => d.date)];
+		// const x_value_range = [d3.min(total_emissions, d => d.date), d3.max(total_emissions, d => d.date)];
+		const x_value_range = [d3.min(total_emissions, d => d.date), new Date(2020, 0, 1, 0, 0, 0, 0)];
 		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
 
 		const xScale = d3.scaleTime()
