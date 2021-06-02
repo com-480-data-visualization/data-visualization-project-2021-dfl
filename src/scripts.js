@@ -1,5 +1,6 @@
 let dataByGas = {};
 let countryCodeName = {};
+let areaChart;
 
 function displayAreaChart() {
 	const PATH = "data/unfcc/time_series"
@@ -121,30 +122,27 @@ function whenDocumentLoaded(action) {
 
 const MARGIN = { top: 50, right: 50, bottom: 50, left: 50 };
 
-class ScatterPlot {
-	constructor(svg_element_id, data, data1, data2, data3, country, gas) {
+class AreaChart {
+	constructor(svg_element_id, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country) {
 		const height = 400;
 		const width = 600;
 
 		this.country = country;
-		this.gas = gas;
-		this.data = data;
-		this.data1 = data1;
-		this.data2 = data2;
-		this.data3 = data3;
-		
+		this.total_emissions = total_emissions;
+		this.co2_emissions = co2_emissions;
+		this.ch4_emissions = ch4_emissions;
+		this.n2o_emissions = n2o_emissions;
 
 		this.svg = d3.select('#' + svg_element_id)
-		.attr("width", width + MARGIN.left + MARGIN.right)
-		.attr("height", height + MARGIN.top + MARGIN.bottom)
-		.append("g")
-		.attr('transform', `translate(${MARGIN.left}, ${MARGIN.top})`);
-
+			.attr("width", width + MARGIN.left + MARGIN.right)
+			.attr("height", height + MARGIN.top + MARGIN.bottom)
+			.append("g")
+			.attr('transform', `translate(${MARGIN.left}, ${MARGIN.top})`);
 
 		this.svg = this.svg.append('g');
 
-		const x_value_range = [d3.min(data, d => d.date), d3.max(data, d => d.date)];
-		const y_value_range = [0, 1.2 * d3.max(data, d => parseInt(d.y))];
+		const x_value_range = [d3.min(total_emissions, d => d.date), d3.max(total_emissions, d => d.date)];
+		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
 
 		const xScale = d3.scaleTime()
 			.domain(x_value_range)
@@ -156,7 +154,7 @@ class ScatterPlot {
 
 		// scatter plot
 		this.svg.selectAll("circle")
-			.data(data)
+			.data(total_emissions)
 			.enter()
 			.append("circle")
 				.attr("r", 2) // radius
@@ -166,7 +164,7 @@ class ScatterPlot {
 				
 		// line plot
 		// this.svg.append("path")
-		// .datum(data)
+		// .datum(total_emissions)
 		// .attr("stroke", "black")
 		// .style("fill", "none")
 		// .attr("stroke-width", 0.5)
@@ -174,11 +172,12 @@ class ScatterPlot {
 		// 	.x(function(d) { return xScale(d.date) })
 		// 	.y(function(d) { return yScale(d.y) }))
 
+
 		// area plot
-		this.svg.append("path")
-		.datum(this.data)
+		this.svg_total_emissions = this.svg.append("path")
+		.datum(this.total_emissions)
 		// .attr("data-legend",gas)
-		.attr("fill", color)
+		.attr("fill", "#13243c")
 		.attr("stroke", "#69b3a2")
 		.attr("stroke-width", 1.5)
 		.attr("d", d3.area()
@@ -187,8 +186,8 @@ class ScatterPlot {
 			.y1(function(d) { return yScale(d.y) })
 			)
 
-		this.svg.append("path")
-		.datum(this.data1)
+		this.svg_co2_emissions = this.svg.append("path")
+		.datum(this.co2_emissions)
 		// .attr("data-legend","CO2 emissions")
 		.attr("fill", "#122f57")
 		.attr("stroke", "#69b3a2")
@@ -199,8 +198,8 @@ class ScatterPlot {
 			.y1(function(d) { return yScale(d.y) })
 			)
 
-		this.svg.append("path")
-		.datum(this.data2)
+		this.svg_ch4_emissions = this.svg.append("path")
+		.datum(this.ch4_emissions)
 		.attr("fill", "#2e516f")
 		.attr("stroke", "#69b3a2")
 		.attr("stroke-width", 1.5)
@@ -210,8 +209,8 @@ class ScatterPlot {
 			.y1(function(d) { return yScale(d.y) })
 			)
 
-		this.svg.append("path")
-		.datum(this.data3)
+		this.svg_n2o_emissions = this.svg.append("path")
+		.datum(this.n2o_emissions)
 		.attr("fill", "#3b7681")
 		.attr("stroke", "#69b3a2")
 		.attr("stroke-width", 1.5)
@@ -223,37 +222,119 @@ class ScatterPlot {
 
 		// create axis
 		const xAxis = d3.axisBottom(xScale);
-
-		this.svg.append("g")
-		.attr('class', 'axis')
-		.attr('class', 'text')
-		.attr('transform', `translate(0, ${height})`)
-		.call(xAxis)
+		this.xSvgAxis = this.svg.append("g")
+			.attr('class', 'axis')
+			.attr('class', 'text')
+			.attr('transform', `translate(0, ${height})`)
+			.call(xAxis)
 
 		const yAxis = d3.axisLeft(yScale);
-		this.svg.append("g")
-		.attr('class', 'axis')
-		.attr('class', 'text')
-		.call(yAxis
-		// .tickPadding(15)
-		.tickFormat(d3.formatPrefix(".1", 1e3)));
+		this.ySvgAxis = this.svg.append("g")
+			.attr('class', 'axis')
+			.attr('class', 'text')
+			.call(yAxis
+			// .tickPadding(15)
+			.tickFormat(d3.formatPrefix(".1", 1e3)));
 
-		this.svg.append("text")
+		this.title = this.svg.append("text")
         .attr("x", (width / 2))             
         .attr("y", 0 - (MARGIN.top / 2))
         .attr("text-anchor", "middle")  
         .style("font-size", "16px") 
         // .style("text-decoration", "underline")  
-        .text(this.country + " " + this.gas + " emissions");
-
+        .text(this.country + " GHG emissions");
 
 		// legend = this.svg.append("g")
 		// 	.attr("class","legend")
 		// 	.attr("transform","translat100,100)")
 		// 	.style("font-size","12px")
 		// 	.call(d3.legend)
-	};
+	}
 
+	update(svg_element_id, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country) {
+		const height = 400;
+		const width = 600;
+
+		const x_value_range = [d3.min(total_emissions, d => d.date), d3.max(total_emissions, d => d.date)];
+		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
+
+		const xScale = d3.scaleTime()
+			.domain(x_value_range)
+			.range([0, width]);
+
+		const yScale = d3.scaleLinear()
+			.domain(y_value_range)
+			.range([height, 0]);
+
+		
+		var t = d3.transition()
+			.duration(750)
+			.ease(d3.easeLinear);
+
+		
+		this.svg.selectAll("circle")
+			.data(total_emissions)
+			.transition(t)		
+			.attr("r", 2) // radius
+			.attr("cx", d => xScale(d.date)) // position, rescaled
+			.attr("cy", d => yScale(d.y));
+
+
+		this.svg_total_emissions
+			.datum(total_emissions)
+			.transition(t)		
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+	
+		this.svg_co2_emissions
+			.datum(co2_emissions)
+			.transition(t)		
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+	
+		this.svg_ch4_emissions 
+			.datum(ch4_emissions)
+			.transition(t)		
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+	
+		this.svg_n2o_emissions
+			.datum(n2o_emissions)
+			.transition(t)		
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+
+		const xAxis = d3.axisBottom(xScale);
+		this.xSvgAxis
+			.attr('transform', `translate(0, ${height})`)
+			.transition(t)
+			.call(xAxis)
+
+		const yAxis = d3.axisLeft(yScale);
+		this.ySvgAxis
+			.transition(t)
+			.call(yAxis
+			// .tickPadding(15)
+			.tickFormat(d3.formatPrefix(".1", 1e3)));
+
+		this.title
+			.transition(t)
+			.attr("x", (width / 2))             
+			.attr("y", 0 - (MARGIN.top / 2))
+			.text(country + " GHG emissions");
+	}
 }
 
 
@@ -263,10 +344,8 @@ function addScatterPlotLegend() {
 
 
 function getAllCountries(dataByGas) {
-	// console.log(dataByGas);	
 	countries = [];
 	for (const [key, value] of Object.entries(dataByGas)) {
-		// console.log(`${key}: ${value}`);
 		countries.push(key);
 	}
 	return countries;
@@ -278,7 +357,6 @@ function loadGasByCountry(country, gas) {
 	// prepare the data here
 	
 	const VALUES = dataByGas[country][gas];
-	// console.log("VALUES: ", VALUES);
 	const YEARS = Array.from(Array(29), (elem, index) => 1990 + index);
 
 	/* 
@@ -529,42 +607,35 @@ function mapProgressBar() {
 
 
 function loadAreaChart(country) {
-
+	
+	// check if country selected on map exist in database
 	if (!(country in dataByGas)) {
 		alert("Sorry, emissions data for " + country + " is not available.");
 		return;
 	}
 
-	d3.selectAll("#plot > *").remove();
+	// load data for different gases
+	co2_emissions = loadGasByCountry(country, "CO2");
+	ch4_emissions = loadGasByCountry(country, "CH4");
+	n2o_emissions = loadGasByCountry(country, "N2O");
 
-
-	gas = "CO2";
-	color = "#208cb6";
-	data1 = loadGasByCountry(country, gas);
-	gas = "CH4";
-	data2 = loadGasByCountry(country, gas);
-	gas = "N2O";
-	data3 = loadGasByCountry(country, gas);
-
-	
-	data_total = [];
-	data1.forEach(function callback(element, index) {
-		// console.log(element, index);
-		// console.log("data1[index]: ", data1[index].y);
-		// console.log("data1[index]: ", data1[index].date);
-		y_total = parseInt(data1[index].y) + parseInt(data2[index].y) + parseInt(data3[index].y);
-
-		data_total.push({y: y_total, date: data1[index].date});
+	// calculate total emissions by summing all gases
+	total_emissions = [];
+	co2_emissions.forEach(function callback(element, index) {
+		y_total = parseInt(co2_emissions[index].y) + parseInt(ch4_emissions[index].y) + parseInt(n2o_emissions[index].y);
+		total_emissions.push({y: y_total, date: co2_emissions[index].date});
 	})
-	// console.log("data_total: ", data_total);
 
-
-	gas = "GHG Total";
-	color = "#13243c";
-
-	data = loadGasByCountry(country, "CO2");
-	new ScatterPlot('plot', data_total, data1, data2, data3, country, gas, color);
+	if (!areaChart) {
+		// creates a new Area Chart
+		d3.selectAll("#plot > *").remove();
+		areaChart = new AreaChart('plot', total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country);
+	} else {
+		// updates existing Area Chart with transitions
+		areaChart.update('plot', total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country);
+	}
 }
+
 
 whenDocumentLoaded(() => {
 	displayMap();
