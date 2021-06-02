@@ -117,6 +117,10 @@ svg {
   padding-right: 0;
 }
 
+.area-chart-legend {
+  cursor: pointer;
+}
+
 .clickable {
   cursor: pointer;
 }
