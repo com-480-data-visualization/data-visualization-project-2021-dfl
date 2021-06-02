@@ -98,7 +98,7 @@ function main() {
         let h_chart = 1000
         let xaxis_height_padding = h_chart/15;
         let padding_chart = h_chart/10;
-        let paddingx_label = 2;
+        let paddingx_label = 10;
         let origin = w_chart / 2;
         let width_mark = 1;
         let x_Scale = d3.scaleLinear().range([- (w_chart/2 - padding_chart), w_chart/2 - padding_chart]);
@@ -120,7 +120,7 @@ function main() {
         // Creating a Dropdown Menu for choosing the number of countries to display
         d3.select("#select_k_Button")
         .selectAll('myOptions')
-        .data(d3.range(Object.keys(data_target[target]).length / 2, 0, -1))
+        .data(d3.range(Object.keys(data_target[target]).length / 2, 2, -1))
         .enter()
         .append('option')
         .text(function (d) { return d; })
@@ -313,7 +313,7 @@ function main() {
             });
 
             // Drawing the axis
-            svg_chart.append("g").attr("class", "axis").attr("transform", "translate(" + origin + "," + (h_chart - xaxis_height_padding) + ")").call(xAxis);
+            svg_chart.append("g").attr("class", "axis_chart").attr("transform", "translate(" + origin + "," + (h_chart - xaxis_height_padding) + ")").call(xAxis);
 
             //Adding a red mark at the kyoto reduction emission goal of country
             node_g_mark
@@ -336,7 +336,7 @@ function main() {
             .attr("text-anchor", "end")
             .attr("x", w_chart - padding_chart)
             .attr("y", h_chart - paddingx_label)
-            .attr("font-size", '10px')
+            .attr("font-size", '20px')
             .text("Reduction in GHG emission (in kt CO2 equivalent)");
 
         }
@@ -482,7 +482,7 @@ function main() {
             .attr("fill", "red");
 
             // Update the axis
-            svg_chart.select(".axis").transition().call(xAxis);
+            svg_chart.select(".axis_chart").transition().call(xAxis);
 
         }
 
