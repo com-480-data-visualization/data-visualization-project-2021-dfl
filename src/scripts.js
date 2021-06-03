@@ -647,6 +647,14 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
+		.defer(d3.csv, PATH + "/data_for_greenhouse_gas_total/Time Series - GHG total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
+			dataByGas[row.Party]["TOTAL"]= [];
+			for (const key in row) {
+				if(key != "Party") {
+					dataByGas[row.Party]["TOTAL"].push(row[key]);
+				}		
+			}
+		})
 		.defer(d3.csv, "data/country_codes.csv", function(row) {
 			// ISO 3166-1 alpha-3 codes data from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 			countryCodeName[row.Code] = row.Name;
@@ -688,6 +696,8 @@ function lodaDataAndDisplayAreaChart() {
 }
 
 function displayDynamicText(country) {
+	let ghg_1990, ghg_2012, ghg_2018;
+
 	if (!(country in dataByGas)) {
 		$("#dyn-text").last().html("Sorry, emissions data for <b>" + country + "</b> is not available.");
 	} else {
@@ -736,19 +746,19 @@ function displayDynamicText(country) {
 
 		$("#s5").text(kp_percentage[country]["kp2"] + "%");		
 
-		ghg_1990 = dataByGas[country]["TOTAL_LULU"][0];
-		ghg_2012 = dataByGas[country]["TOTAL_LULU"][2008 - 1990];
-		ghg_2018 = dataByGas[country]["TOTAL_LULU"][2018 - 1990];
-
-		// console.log("ghg_1990: ", ghg_1990);
-		// console.log("ghg_2012: ", ghg_2012);
-		// console.log("ghg_2018: ", ghg_2018);
+		if (LULUCF == 1) {
+			ghg_1990 = dataByGas[country]["TOTAL_LULU"][0];
+			ghg_2012 = dataByGas[country]["TOTAL_LULU"][2008 - 1990];
+			ghg_2018 = dataByGas[country]["TOTAL_LULU"][2018 - 1990];
+		} else {
+			ghg_1990 = dataByGas[country]["TOTAL"][0];
+			ghg_2012 = dataByGas[country]["TOTAL"][2008 - 1990];
+			ghg_2018 = dataByGas[country]["TOTAL"][2018 - 1990];
+		}
 		
-		// actual_ percentage: (ghg_2012 - ghg_1990) / ghg_1990
+		// calculate actual percentage:
 		rate_2012_1990 = (ghg_2012 - ghg_1990) / ghg_1990
 		rate_2018_1990 = (ghg_2018 - ghg_1990) / ghg_2018
-		// console.log("rate_2012_1990: ", rate_2012_1990);
-		// console.log("rate_2018_1990: ", rate_2018_1990);
 
 		if (rate_2012_1990 < 0) {
 			$("#s6").text("decreased").addClass("success");	
@@ -1234,6 +1244,7 @@ function displayBarChart() {
 			k_new = d3.select("#select_k_Button").property("value");
 			updateBarChart();
 			loadAreaChart(selected_country);
+			displayDynamicText(selected_country);
 		})
 
 		// Event listener to update the chart when the user selects a country on the plot above
