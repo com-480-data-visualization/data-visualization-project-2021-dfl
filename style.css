@@ -130,6 +130,12 @@ svg {
   text-anchor: middle;
 }
 
+.instructions {
+  font-size: 0.7em;
+  font-style: italic;
+  text-anchor: left;
+}
+
 .kyoto-begining-lines {
   stroke-width: 2;
   stroke-dasharray: 6;
@@ -142,4 +148,12 @@ svg {
   stroke-dasharray: 6;
   stroke: red;
   fill: none;
+}
+
+g.context g.axis path {
+	stroke-opacity: .1;
+}
+
+g.context g.axis line {
+	stroke-opacity: .1;
 }
