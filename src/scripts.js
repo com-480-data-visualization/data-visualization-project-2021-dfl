@@ -14,6 +14,7 @@ let xScale;
 const brushContextHeight = 50;
 const brushContextWidth = 600;
 const areaChartMargin = { top: 50, right: 170, bottom: 100, left: 50 };
+const PATH = "src/data";
 
 
 class AreaChart {
@@ -583,7 +584,6 @@ function loadAreaChart(country) {
 
 
 function lodaDataAndDisplayAreaChart() {
-	const PATH = "data/unfcc/time_series"
 
 	///////////////////////////////////////////////////////////
 	//////////	LOAD AND PREAPRE DATA FOR AREA CHART ////////// 
@@ -591,7 +591,7 @@ function lodaDataAndDisplayAreaChart() {
 
 	// load and prepare the data here
 	d3.queue()
-	.defer(d3.csv, PATH + "/data_by_gas/Time Series - CO₂ total with LULUCF, in kt.csv", function(row) {
+	.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CO₂ total with LULUCF, in kt.csv", function(row) {
 			dataByGas[row.Party] = {"CO2_LULU": []};
 			for (const key in row) {
 				if(key != "Party") {
@@ -599,7 +599,7 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		.defer(d3.csv, PATH + "/data_by_gas/Time Series - CO₂ total without LULUCF, in kt.csv", function(row) {
+		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CO₂ total without LULUCF, in kt.csv", function(row) {
 			dataByGas[row.Party]["CO2"]= [];
 			for (const key in row) {
 				if(key != "Party") {
@@ -607,7 +607,7 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		.defer(d3.csv, PATH + "/data_by_gas/Time Series - CH₄ total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
+		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CH₄ total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["CH4_LULU"]= [];
 			for (const key in row) {
 				if(key != "Party") {
@@ -615,7 +615,7 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		.defer(d3.csv, PATH + "/data_by_gas/Time Series - CH₄ total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
+		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CH₄ total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["CH4"]= [];
 			for (const key in row) {
 				if(key != "Party") {
@@ -623,7 +623,7 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		.defer(d3.csv, PATH + "/data_by_gas/Time Series - N₂O total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
+		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - N₂O total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["N2O_LULU"]= [];
 			for (const key in row) {
 				if(key != "Party") {
@@ -631,7 +631,7 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		.defer(d3.csv, PATH + "/data_by_gas/Time Series - N₂O total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
+		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - N₂O total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["N2O"]= [];
 			for (const key in row) {
 				if(key != "Party") {
@@ -639,7 +639,7 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		.defer(d3.csv, PATH + "/data_for_greenhouse_gas_total/Time Series - GHG total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
+		.defer(d3.csv, PATH + "/unfcc/time_series/data_for_greenhouse_gas_total/Time Series - GHG total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["TOTAL_LULU"]= [];
 			for (const key in row) {
 				if(key != "Party") {
@@ -647,7 +647,7 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		.defer(d3.csv, PATH + "/data_for_greenhouse_gas_total/Time Series - GHG total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
+		.defer(d3.csv, PATH + "/unfcc/time_series/data_for_greenhouse_gas_total/Time Series - GHG total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["TOTAL"]= [];
 			for (const key in row) {
 				if(key != "Party") {
@@ -655,7 +655,7 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		.defer(d3.csv, "data/country_codes.csv", function(row) {
+		.defer(d3.csv, PATH + "/country_codes.csv", function(row) {
 			// ISO 3166-1 alpha-3 codes data from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 			countryCodeName[row.Code] = row.Name;
 		})
@@ -1176,24 +1176,22 @@ let y_Scale = d3.scaleBand().rangeRound([0, h_chart - xaxis_height_padding - 3])
 
 function displayBarChart() {
 
-	const PATH = "data/unfcc/time_series"
-
     // Reading csv and pouring their content in their respect data object
     d3.queue()
-            .defer(d3.csv, "data/Kyoto_targets.csv", function(d) {
+            .defer(d3.csv, "src/data/Kyoto_targets.csv", function(d) {
                 data_target["target1"][d.Party] = -parseFloat(d.target1); // minus to convert it to a "reduction" in emission
                 data_target["target1noLULUCF"][d.Party] = -parseFloat(d.target1no);
                 data_target["target2"][d.Party] = -parseFloat(d.target2);
                 data_target["target2noLULUCF"][d.Party] = -parseFloat(d.target2no);
 								kp_percentage[d.Party] = {"kp1": -parseFloat(d["Kyoto target 2008-2012"]), "kp2": -parseFloat(d["Kyoto target 2013-2020"])};
 							})
-            .defer(d3.csv, PATH + "/data_for_greenhouse_gas_total/Time Series - GHG total with LULUCF, in kt CO₂ equivalent.csv", function(d) {
+            .defer(d3.csv, PATH + "/unfcc/time_series/data_for_greenhouse_gas_total/Time Series - GHG total with LULUCF, in kt CO₂ equivalent.csv", function(d) {
                 for (i = 1990; i <= 2018; i++) {
                 data_GHG_LULUCF[String(i)][d.Party] = parseFloat(d[1990]) - parseFloat(d[String(i)]); // storing the reduction compared to the year 1990
                 }
 
         })
-            .defer(d3.csv, PATH + "/data_for_greenhouse_gas_total/Time Series - GHG total without LULUCF, in kt CO₂ equivalent.csv", function(d) {
+            .defer(d3.csv, PATH + "/unfcc/time_series/data_for_greenhouse_gas_total/Time Series - GHG total without LULUCF, in kt CO₂ equivalent.csv", function(d) {
                 for (i = 1990; i <= 2018; i++) {
                 data_GHG_no_LULUCF[String(i)][d.Party] = parseFloat(d[1990]) - parseFloat(d[String(i)]);
                 }
@@ -1368,7 +1366,7 @@ function createBarChart () {
 	})
 	.attr("height", y_Scale.bandwidth())
 	.attr("xlink:href", function (d) {
-		return "Images/" + d + ".png";
+		return "src/Images/" + d + ".png";
 	});
 
 	// Drawing the axis
@@ -1615,7 +1613,7 @@ function updateBarChart() {
 	})
 	.attr("height", y_Scale.bandwidth())
 	.attr("xlink:href", function (d) {
-		return "Images/" + d + ".png";
+		return "src/Images/" + d + ".png";
 	});
 
 	//Repositionning the red mark at the kyoto reduction emission goal of countries
