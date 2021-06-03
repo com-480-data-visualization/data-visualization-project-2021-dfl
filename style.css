@@ -44,7 +44,7 @@ body {
   font-size: 1.1rem;
 }
 
-#k1 {
+/* #k1 {
   margin-left: 625px;
   font-size: 0.8rem;
 }
@@ -52,7 +52,7 @@ body {
 #k2 {
   margin-left: 45px;
   font-size: 0.8rem;
-}
+} */
 
 .current {
   margin-left: 460px;
@@ -127,6 +127,27 @@ g.context g.axis line {
 	stroke-opacity: .1;
 }
 
+#p1 {
+  font-weight: bold;
+  color: green;
+}
+
+.dynamic_text {
+  font-weight: bold;
+}
+
+.success {
+  color: green;
+}
+
+.mediocre {
+  color: orange;
+
+}
+
+.failure {
+  color: red;
+}
 
 /*
 .bar {

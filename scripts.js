@@ -379,7 +379,7 @@ function loadAreaChart(country) {
 
 	// check if country selected on map exist in database
 	if (!(country in dataByGas)) {
-		alert("Sorry, emissions data for " + country + " is not available.");
+		// $("#dyn-text").text("Sorry, emissions data for " + country + " is not available.");
 		return;
 	}
 
@@ -401,6 +401,8 @@ function loadAreaChart(country) {
 	if (!areaChart) {
 		// creates a new Area Chart
 		d3.selectAll("#plot > *").remove();
+
+		console.log("width: ", width + areaChartMargin.left + areaChartMargin.right);
 
 		svg = d3.select('#' + svg_element_id)
 			.attr("width", width + areaChartMargin.left + areaChartMargin.right)
@@ -561,7 +563,7 @@ function loadAreaChart(country) {
 }
 
 
-function displayAreaChart() {
+function lodaDataAndDisplayAreaChart() {
 	const PATH = "data/unfcc/time_series"
 
 	///////////////////////////////////////////////////////////
@@ -618,6 +620,15 @@ function displayAreaChart() {
 				}		
 			}
 		})
+		
+		.defer(d3.csv, PATH + "/data_for_greenhouse_gas_total/Time Series - GHG total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
+			dataByGas[row.Party]["TOTAL_LULU"]= [];
+			for (const key in row) {
+				if(key != "Party") {
+					dataByGas[row.Party]["TOTAL_LULU"].push(row[key]);
+				}		
+			}
+		})
 		.defer(d3.csv, "data/country_codes.csv", function(row) {
 			// ISO 3166-1 alpha-3 codes data from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 			countryCodeName[row.Code] = row.Name;
@@ -628,7 +639,7 @@ function displayAreaChart() {
 		// Function executed after data has been loaded:
 		function ready(error) {
 			if (error) throw error;
-
+			console.log("dataByGas: ", dataByGas);
 			let countries = getAllCountries(dataByGas);
 			let select = document.getElementById("countryDropdown"); 
 	
@@ -653,10 +664,102 @@ function displayAreaChart() {
 			$('#countryDropdown li').on('click', function(){
 				country = $(this).text();
 				loadAreaChart(country);
+				displayDynamicText(country);
 			});
 		}
 }
 
+function displayDynamicText(country) {
+	if (!(country in dataByGas)) {
+		$("#dyn-text").last().html("Sorry, emissions data for <b>" + country + "</b> is not available.");
+	} else {
+		$("#dyn-text").last().html(`
+			According to the Kyoto protocol, 
+			<span class="dynamic_text" id="s1">_____</span> 
+			committed to 
+			<span class="dynamic_text" id="s2">_____</span> 
+			its GHG emissions by 
+			<span class="dynamic_text" id="s3">_____</span> 
+			by 2012, and to 
+			<span class="dynamic_text" id="s4">_____</span> 
+			its emissions by
+			<span class="dynamic_text" id="s5">_____</span> 
+			by 2018. 
+
+			<br>It fact, has 
+			<span class="dynamic_text" id="s6">_____</span> 
+			its emissions by 
+			<span class="dynamic_text" id="s7">___</span> 
+			between 1990 and 2012, and 
+			<span class="dynamic_text" id="s8">_____</span> 
+			its emissions by 
+			<span class="dynamic_text" id="s9">_____</span> 
+			between 1990 and 2018. 
+		`);
+		$("#s1").text(country);
+
+		if (kp_percentage[country]["kp1"] < 0) {
+			$("#s2").text("decrease");	
+		} else if (kp_percentage[country]["kp1"] == 0) {
+			$("#s2").text("not change");	
+		} else  {
+			$("#s2").text("increase");	
+		}
+
+		$("#s3").text(kp_percentage[country]["kp1"] + "%");	
+
+		if (kp_percentage[country]["kp2"] < 0) {
+			$("#s4").text("decrease");	
+		} else if (kp_percentage[country]["kp2"] == 0) {
+			$("#s4").text("not change");	
+		} else  {
+			$("#s4").text("increase");	
+		}
+
+		$("#s5").text(kp_percentage[country]["kp2"] + "%");		
+
+		ghg_1990 = dataByGas[country]["TOTAL_LULU"][0];
+		ghg_2012 = dataByGas[country]["TOTAL_LULU"][2008 - 1990];
+		ghg_2018 = dataByGas[country]["TOTAL_LULU"][2018 - 1990];
+
+		// console.log("ghg_1990: ", ghg_1990);
+		// console.log("ghg_2012: ", ghg_2012);
+		// console.log("ghg_2018: ", ghg_2018);
+		
+		// actual_ percentage: (ghg_2012 - ghg_1990) / ghg_1990
+		rate_2012_1990 = (ghg_2012 - ghg_1990) / ghg_1990
+		rate_2018_1990 = (ghg_2018 - ghg_1990) / ghg_2018
+		// console.log("rate_2012_1990: ", rate_2012_1990);
+		// console.log("rate_2018_1990: ", rate_2018_1990);
+
+		if (rate_2012_1990 < 0) {
+			$("#s6").text("decreased").addClass("success");	
+			$("#s7").addClass("success");		
+		} else if (rate_2012_1990 == 0) {
+			$("#s6").text("not changed").addClass("mediocre");	
+			$("#s7").addClass("mediocre");		
+		} else  {
+			$("#s6").text("increased").addClass("failure");	
+			$("#s7").addClass("failure");		
+		}
+
+		$("#s7").text(Math.abs(Math.round(100 * rate_2012_1990)) + "%");		
+
+		if (rate_2018_1990 < 0) {
+			$("#s8").text("decreased").addClass("success");	
+			$("#s9").addClass("success");		
+		} else if (rate_2018_1990 == 0) {
+			$("#s8").text("not changed").addClass("mediocre");	
+			$("#s9").addClass("mediocre");		
+		} else  {
+			$("#s8").text("increased").addClass("failure");	
+			$("#s9").addClass("failure");		
+		}
+
+		$("#s9").text(Math.abs(Math.round(100 * rate_2018_1990)) + "%");		
+	}
+
+}
 
 function getAllCountries(dataByGas) {
 	countries = [];
@@ -790,8 +893,8 @@ function displayMap() {
 				.classed("clickable", true)
 				.on("click", function(d, i) {
 					// load Area Chart for country clicked on map
-					console.log(d.id)
 					loadAreaChart(countryCodeName[d.id]);
+					displayDynamicText(countryCodeName[d.id]);
 				})		
 				.on("mouseover",function(d,i){
 					return tooltip.style("hidden", false).html(d.properties.name);
@@ -826,7 +929,7 @@ function displayMap() {
                     .min(d3.min(dataTime))
                     .max(d3.max(dataTime))
                     .step(1000 * 60 * 60 * 24 * 365)
-                    .width(700)
+                    .width(1000)
                     .tickFormat(d3.timeFormat('%Y'))
                     .tickValues(dataTime)
                     .default(new Date(1990, 10, 3))
@@ -842,10 +945,10 @@ function displayMap() {
     var gTime = d3
                 .select('div#slider-time')
                 .append('svg')
-                .attr('width', 1000)
-                .attr('height', 100)
+                .attr('width', 1200)
+                .attr('height', 80)
                 .append('g')
-                .attr('transform', 'translate(180,20)');
+                .attr('transform', 'translate(100,20)');
     
     gTime.call(sliderTime);
 
@@ -1027,7 +1130,7 @@ let LULUCF = 0;
 let target = "target1noLULUCF"; //default of the dropdown menu
 let year = 1990; //default of the dropdown menu
 let selected_data = data_GHG_no_LULUCF; //default of the dropdown menu
-
+let kp_percentage = {};
 
 // Definition SVG parameters
 let w_chart = document.getElementById('chart').clientWidth - 2 * 16 ;//take into account the 1rem padding of svg
@@ -1046,10 +1149,13 @@ function displayBarChart() {
     // Reading csv and pouring their content in their respect data object
     d3.queue()
             .defer(d3.csv, "data/Kyoto_targets.csv", function(d) {
+								// console.log("d: ", d);
                 data_target["target1"][d.Party] = -parseFloat(d.target1); // minus to convert it to a "reduction" in emission
                 data_target["target1noLULUCF"][d.Party] = -parseFloat(d.target1no);
                 data_target["target2"][d.Party] = -parseFloat(d.target2);
-                data_target["target2noLULUCF"][d.Party] = -parseFloat(d.target2no);})
+                data_target["target2noLULUCF"][d.Party] = -parseFloat(d.target2no);
+								kp_percentage[d.Party] = {"kp1": -parseFloat(d["Kyoto target 2008-2012"]), "kp2": -parseFloat(d["Kyoto target 2013-2020"])};
+							})
             .defer(d3.csv, "data/GHG_LULUCF.csv", function(d) {
                 for (i = 1990; i <= 2018; i++) {
                 data_GHG_LULUCF[String(i)][d.Party] = parseFloat(d[1990]) - parseFloat(d[String(i)]); // storing the reduction compared to the year 1990
@@ -1073,6 +1179,8 @@ function displayBarChart() {
         //if error during the logging:
         if (error) throw error;
 
+				// console.log("kp_percentage", kp_percentage);
+
 		k = Object.keys(data_target[target]).length/2;
 		k_new = k;
         createBarChart();
@@ -1093,7 +1201,7 @@ function displayBarChart() {
 		// Creating a Dropdown Menu for choosing the dataset (LULUCF or no LULUCF)
 		d3.select("#select_LULUCF_Button")
 		.selectAll('myOptions')
-		.data(["No LULUCF", "LULUCF"])
+		.data(["No Land Use, Land-Use Change and Forestry (No LULUCF)", "Land Use, Land-Use Change and Forestry (LULUCF)"])
 		.enter()
 		.append('option')
 		.text(function (d) { return d; })
@@ -1536,7 +1644,7 @@ function whenDocumentLoaded(action) {
 whenDocumentLoaded(() => {
 	displayMap();
 	mapProgressBar();
-	displayAreaChart();
+	lodaDataAndDisplayAreaChart();
 	displayBarChart();
 });
 
