@@ -196,7 +196,13 @@ class AreaChart {
         .attr("text-anchor", "middle")  
         .style("font-size", "16px") 
         // .style("text-decoration", "underline")  
-        .text(this.country + " GHG emissions");
+        .text(function() { 
+					if (LULUCF == 1) {
+						return selected_country + " GHG emissions (with LULUCF)";
+					} else {
+						return selected_country + " GHG emissions (without LULUCF)";
+					}
+				});
 
 
 		///////////////////////////////////////////////////////////
@@ -370,7 +376,14 @@ class AreaChart {
 			.transition(t)
 			.attr("x", (width / 2))             
 			.attr("y", 0 - (areaChartMargin.top / 2))
-			.text(country + " GHG emissions");
+			.text(function() { 
+				if (LULUCF == 1) {
+					return selected_country + " GHG emissions (with LULUCF)";
+				} else {
+					return selected_country + " GHG emissions (without LULUCF)";
+				}
+			});
+
 	}
 }
 
@@ -384,9 +397,15 @@ function loadAreaChart(country) {
 	}
 
 	// load data for different gases
-	co2_emissions = loadGasDataByCountry(country, "CO2");
-	ch4_emissions = loadGasDataByCountry(country, "CH4");
-	n2o_emissions = loadGasDataByCountry(country, "N2O");
+	if (LULUCF == 1) {
+		co2_emissions = loadGasDataByCountry(country, "CO2_LULU");
+		ch4_emissions = loadGasDataByCountry(country, "CH4_LULU");
+		n2o_emissions = loadGasDataByCountry(country, "N2O_LULU");
+	} else {
+		co2_emissions = loadGasDataByCountry(country, "CO2");
+		ch4_emissions = loadGasDataByCountry(country, "CH4");
+		n2o_emissions = loadGasDataByCountry(country, "N2O");
+	}
 
 	// calculate total emissions by summing all gases
 	total_emissions = [];
@@ -605,10 +624,10 @@ function lodaDataAndDisplayAreaChart() {
 			}
 		})
 		.defer(d3.csv, PATH + "/data_by_gas/Time Series - N₂O total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
-			dataByGas[row.Party]["N20_LULU"]= [];
+			dataByGas[row.Party]["N2O_LULU"]= [];
 			for (const key in row) {
 				if(key != "Party") {
-					dataByGas[row.Party]["N20_LULU"].push(row[key]);
+					dataByGas[row.Party]["N2O_LULU"].push(row[key]);
 				}		
 			}
 		})
@@ -620,7 +639,6 @@ function lodaDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		
 		.defer(d3.csv, PATH + "/data_for_greenhouse_gas_total/Time Series - GHG total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
 			dataByGas[row.Party]["TOTAL_LULU"]= [];
 			for (const key in row) {
@@ -893,8 +911,10 @@ function displayMap() {
 				.classed("clickable", true)
 				.on("click", function(d, i) {
 					// load Area Chart for country clicked on map
-					loadAreaChart(countryCodeName[d.id]);
-					displayDynamicText(countryCodeName[d.id]);
+					selected_country = countryCodeName[d.id];
+					loadAreaChart(selected_country);
+					displayDynamicText(selected_country);
+					updateBarChart();
 				})		
 				.on("mouseover",function(d,i){
 					return tooltip.style("hidden", false).html(d.properties.name);
@@ -1123,7 +1143,7 @@ let node_g_em;
 let node_g_flags;
 let node_g_mark;
 let xAxis;
-let selected_country;
+let selected_country = "United States of America";
 let k_new;
 let k;
 let LULUCF = 0;
@@ -1212,7 +1232,8 @@ function displayBarChart() {
 
 			LULUCF = d3.select("#select_LULUCF_Button").property("value");
 			k_new = d3.select("#select_k_Button").property("value");
-			updateBarChart()
+			updateBarChart();
+			loadAreaChart(selected_country);
 		})
 
 		// Event listener to update the chart when the user selects a country on the plot above
