@@ -20,7 +20,7 @@
       crossorigin="anonymous"
     ></script>
 
-    <title>Climate Change Visualizer</title>
+    <title>Kyoto Protocol Tracker</title>
     <meta name="author" content="Kirell Benzi, Krzysztof Lis, Volodymyr Miz" />
 
     <link rel="stylesheet" href="style.css" />
@@ -29,36 +29,14 @@
     <div class="container-fluid">
       <nav class="navbar navbar-dark bg-primary">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Climate Change Visualizer</a>
+          <a class="navbar-brand" href="#">Kyoto Protocol / GHG emissions Tracker</a>
         </div>
       </nav>
 
-      <div class="row">
-        <!-- visual gap  -->
-      </div>
 
-      <div class="row mt-2">
-        <div class="col-6">
-          <div class="map">
-            <svg id="legend"></svg>
-            <div id="map-cont"></div>
-            <div>
-              <span id="k1">Phase 1</span>
-              <span id="k2">Phase 2</span>
-            </div>
-            <div id="slider-time"></div>
-          </div>
-        </div>
-        <div class="col-6 my-auto">
-          <svg id="plot">
-            .axis { stroke-width: 1; stroke: rgb(200, 200, 200); } text { fill:
-            rgb(0, 0, 0); font-size: 0.7rem; text-anchor: middle; } circle {
-            fill: white; } .cold { fill: rgb(79, 89, 250); } .warm { fill:
-            rgb(255, 80, 68); }
-          </svg>
-
+      <div class="row mt-4">
           <!-- dropdown menu  -->
-          <div class="dropdown">
+          <div class="dropdown text-center">
             <button
               class="btn btn-secondary dropdown-toggle"
               type="button"
@@ -66,7 +44,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Select country
+              Select a country
             </button>
             <ul
               class="dropdown-menu button"
@@ -74,21 +52,52 @@
               id="countryDropdown"
             ></ul>
           </div>
+          <p class="text-center">
+            or click on the map to track a country's Greenhouse Gas (GHG) emissions
+          </p>
+      </div>
 
-          <div class="bar">
+      <div class="row">
+        <div class="col-6 widget my-auto">
+          <p class="text-center">
+            Worldwide GHG emissions
+          </p>
+          <div class="map">
+            <svg id="legend"></svg>
+            <div id="map-cont"></div>
+            <!-- <div>
+              <span id="k1">Phase 1</span>
+              <span id="k2">Phase 2</span>
+            </div> -->
+          </div>
+        </div>
+        <div class="col-6 widget my-auto text-center">
+          <svg id="plot">
+          </svg>
+          <!-- <div class="bar">
             <p id="title1">Progress to reach target Phase 1</p>
             <div class="prog_bar"></div>
             <p class="current">30%</p>
-          </div>
+          </div> -->
         </div>
       </div>
-      <div class="row">
-        <!-- Initialize a select button for selecting year-->
-        <select class="button" , id="select_LULUCF_Button"></select>
-        <select class="button" , id="select_k_Button"></select>
+      <div class="row" >
+        <div id="slider-time" class="text-center"></div>
+          <p class="text-center" id="dyn-text">
+            <!-- dynamic text inserted when selecting a country -->
+          </p>      
+      </div>
+      <div class="row" >
+        <div class="col-12 widget text-center">
 
-        <!-- Create a div where the bar chart will appear -->
-        <div id="chart"></div>
+            Select the number of best / worst countries you want to compare
+          <!-- Initialize a select button for selecting year-->
+          <select class="button" , id="select_k_Button"></select>
+          with
+          <select class="button" , id="select_LULUCF_Button"></select>
+          <!-- Create a div where the bar chart will appear -->
+          <div id="chart"></div>
+        </div>
       </div>
     </div>
 
