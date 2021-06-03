@@ -1,11 +1,574 @@
+///////////////////////////////////////////////////////////
+//////////				  	AREA CHART SECTION 				 ////////// 
+/////////////////////////////////////////////////////////// 
+
 let dataByGas = {};
 let countryCodeName = {};
 let areaChart;
+let x_value_range = [new Date(1990, 0, 1, 0, 0, 0, 0), new Date(2021, 0, 1, 0, 0, 0, 0)];
+let kp_beginning = new Date(2008, 0, 1, 0, 0, 0, 0);
+let kp_commitment_1 = new Date(2013, 0, 1, 0, 0, 0, 0);
+let kp_commitment_2 = new Date(2020, 0, 1, 0, 0, 0, 0);
+let yContentScale;
+let xScale;
+const brushContextHeight = 50;
+const brushContextWidth = 600;
+const areaChartMargin = { top: 50, right: 170, bottom: 100, left: 50 };
+
+
+class AreaChart {
+	constructor(svg, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country, x_value_range) {
+		const height = 400;
+		const width = 600;
+		
+		this.svg = svg;
+		this.country = country;
+		this.total_emissions = total_emissions;
+		this.co2_emissions = co2_emissions;
+		this.ch4_emissions = ch4_emissions;
+		this.n2o_emissions = n2o_emissions;
+		this.x_value_range = x_value_range;
+		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
+
+		// create a list of keys
+		let keys = ["Total emissions", "CO2 emissions", "CH4 emissions", "N2O emissions"]
+		let areaChartColors = d3.scaleOrdinal()
+			.domain(keys)
+			.range(["#13243c", "#122f57", "#2e516f", "#3b7681"])
+
+		this.svg = this.svg.append('g');
+		
+		const xScale = d3.scaleTime()
+			.domain(x_value_range)
+			.range([0, width]);
+
+		const yScale = d3.scaleLinear()
+			.domain(y_value_range)
+			.range([height, 0]);
+
+			
+		
+		///////////////////////////////////////////////////////////
+		//////////				  		ADD CLIPPATH	  				 ////////// 	inspired by http://www.d3noob.org/2015/07/clipped-paths-in-d3js-aka-clippath.html 
+		///////////////////////////////////////////////////////////    		 and https://www.d3-graph-gallery.com/graph/stackedarea_template.html)
+
+		var clip = svg.append("defs").append("svg:clipPath")
+		.attr("id", "clip-rect")
+		.append("svg:rect")
+		.attr("width", width )
+		.attr("height", height )
+		.attr("x", 0)
+		.attr("y", 0);
+
+
+		///////////////////////////////////////////////////////////
+		//////////				  		AREA PLOTS		  				 //////////
+		///////////////////////////////////////////////////////////
+		
+		this.svg_total_emissions = this.svg.append("path")
+			.datum(this.total_emissions)
+			.attr("fill", areaChartColors("Total emissions"))
+			.attr("stroke", "#69b3a2")
+			.attr("stroke-width", 1.5)
+			.attr("class", "myArea total_emissions")
+			.attr("clip-path", "url(#clip-rect")
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date)	})
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+
+		this.svg_co2_emissions = this.svg.append("path")
+			.datum(this.co2_emissions)
+			.attr("fill", areaChartColors("CO2 emissions"))
+			.attr("stroke", "#69b3a2")
+			.attr("stroke-width", 1.5)
+			.attr("class", "myArea co2_emissions")
+			.attr("clip-path", "url(#clip-rect")
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+
+		this.svg_ch4_emissions = this.svg.append("path")
+			.datum(this.ch4_emissions)
+			.attr("fill", areaChartColors("CH4 emissions"))
+			.attr("stroke", "#69b3a2")
+			.attr("stroke-width", 1.5)
+			.attr("class", "myArea ch4_emissions")
+			.attr("clip-path", "url(#clip-rect")
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+
+		this.svg_n2o_emissions = this.svg.append("path")
+			.datum(this.n2o_emissions)
+			.attr("fill", areaChartColors("N2O emissions"))
+			.attr("stroke", "#69b3a2")
+			.attr("stroke-width", 1.5)
+			.attr("class", "myArea n2o_emissions")
+			.attr("clip-path", "url(#clip-rect")
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+
+		///////////////////////////////////////////////////////////
+		//////////  PLOT LINES FOR THE KYOTO COMMITMENTS //////////
+		///////////////////////////////////////////////////////////
+
+		// Line for beginning of Kyoto protocol
+		this.kp_0_line = this.svg.append("line")
+			.attr("x1", xScale(kp_beginning))  
+			.attr("y1", 0 + 30)
+			.attr("x2", xScale(kp_beginning))  
+			.attr("y2", height)
+			.attr("class", "kyoto-begining-lines")
+			.attr("clip-path", "url(#clip-rect")
+
+		this.kp_0_text = this.svg.append("text")
+			.attr("y", 20)
+			.attr("x", function(){ return xScale(kp_beginning)})
+			.attr("class", "kyoto-commitment-labels")
+			.text("KP Beginning")
+			.attr("clip-path", "url(#clip-rect")
+
+		// Line for Kyoto 1st commitment
+		this.kp_1_line = this.svg.append("line")
+			.attr("x1", xScale(kp_commitment_1))  
+			.attr("y1", 0 + 30)
+			.attr("x2", xScale(kp_commitment_1))  
+			.attr("y2", height)
+			.attr("class", "kyoto-commitment-lines")
+			.attr("clip-path", "url(#clip-rect")
+
+		this.kp_1_text = this.svg.append("text")
+			.attr("y", 20)
+			.attr("x", function(){ return xScale(kp_commitment_1)})
+			.attr("class", "kyoto-commitment-labels")
+			.attr("clip-path", "url(#clip-rect")
+			.text("KP 1st commitment ")
+			.attr("clip-path", "url(#clip-rect")
+
+		// Line for Kyoto 2nd commitment
+		this.kp_2_line = this.svg.append("line")
+			.attr("x1", xScale(kp_commitment_2))
+			.attr("y1", 0 + 30)
+			.attr("x2", xScale(kp_commitment_2))
+			.attr("y2", height)
+			.attr("class", "kyoto-commitment-lines")
+			.attr("clip-path", "url(#clip-rect")
+
+		this.kp_2_text = this.svg.append("text")
+			.attr("y", 20)
+			.attr("x", function(){ return xScale(kp_commitment_2) - 20})
+			.attr("class", "kyoto-commitment-labels")
+			.text("KP 2nd commitment")
+			.attr("clip-path", "url(#clip-rect")
+			
+		
+		///////////////////////////////////////////////////////////
+		//////////		  			CREATE THE AXIS	  				 //////////
+		///////////////////////////////////////////////////////////
+
+		const xAxis = d3.axisBottom(xScale);
+		this.xSvgAxis = this.svg.append("g")
+			.attr('class', 'axis')
+			.attr('class', 'text')
+			.attr('transform', `translate(0, ${height})`)
+			.call(xAxis)
+
+		const yAxis = d3.axisLeft(yScale);
+		this.ySvgAxis = this.svg.append("g")
+			.attr('class', 'axis')
+			.attr('class', 'text')
+			.call(yAxis
+			// .tickPadding(15)
+			.tickFormat(d3.formatPrefix(".1", 1e3)));
+
+		this.title = this.svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (areaChartMargin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        // .style("text-decoration", "underline")  
+        .text(this.country + " GHG emissions");
+
+
+		///////////////////////////////////////////////////////////
+		//////////		  		  HIGHLIGHT GROUP   				 ////////// inspired by https://www.d3-graph-gallery.com/graph/stackedarea_template.html
+		///////////////////////////////////////////////////////////
+
+    // What to do when one group is hovered
+    var highlight = function(d){
+      // reduce opacity of all groups
+      d3.selectAll(".myArea").style("opacity", .1)
+      // expect the one that is hovered
+      d3.select("."+d.toLowerCase().replace(/ /g,"_")).style("opacity", 1)
+    }
+
+    // And when it is not hovered anymore
+    var noHighlight = function(d){
+      d3.selectAll(".myArea").style("opacity", 1)
+    }
+
+
+		///////////////////////////////////////////////////////////
+		//////////		  		    	LEGEND	      				 ////////// inspired by https://www.d3-graph-gallery.com/graph/stackedarea_template.html
+		///////////////////////////////////////////////////////////
+
+		// Add rect in the legend for each name.
+		var size = 20
+		this.svg.selectAll("mydots")
+			.data(keys)
+			.enter()
+			.append("rect")
+				.attr("x", width + 40)
+				.attr("y", function(d,i){ return 140 + i*(size+15)}) 
+				.attr("width", size)
+				.attr("height", size)
+				.style("fill", function(d){ return areaChartColors(d)})
+				.attr("class", "area-chart-legend")
+				.on("mouseover", highlight)
+        .on("mouseleave", noHighlight)
+
+		// Add legend text
+		this.svg.selectAll("mylabels")
+			.data(keys)
+			.enter()
+			.append("text")
+				.attr("x", width + 40 + size*1.2)
+				.attr("y", function(d,i){ return 140 + i*(size+15) + (size/2)}) 
+				.style("fill", function(d){ return areaChartColors(d) })
+				.text(function(d){ return d})
+				.attr("text-anchor", "left")
+				.attr("font-size", "0.8em")
+				.style("alignment-baseline", "middle")
+				.attr("class", "area-chart-legend")
+				.on("mouseover", highlight)
+        .on("mouseleave", noHighlight)
+	}
+
+	update(svg, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country, x_value_range) {
+		this.svg = svg;
+		const height = 400;
+		const width = 600;
+
+		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
+
+		const xScale = d3.scaleTime()
+			.domain(x_value_range)
+			.range([0, width]);
+
+		const yScale = d3.scaleLinear()
+			.domain(y_value_range)
+			.range([height, 0]);
+
+		var t = d3.transition()
+			.duration(750)
+			.ease(d3.easeLinear);
+
+
+		///////////////////////////////////////////////////////////
+		//////////			  	UPDATE AREA PLOTS	  				 //////////
+		///////////////////////////////////////////////////////////
+
+		this.svg_total_emissions
+			.datum(total_emissions)
+			.transition(t)		
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+	
+		this.svg_co2_emissions
+			.datum(co2_emissions)
+			.transition(t)		
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+	
+		this.svg_ch4_emissions 
+			.datum(ch4_emissions)
+			.transition(t)		
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+	
+		this.svg_n2o_emissions
+			.datum(n2o_emissions)
+			.transition(t)		
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date) })
+				.y0(yScale(0))
+				.y1(function(d) { return yScale(d.y) })
+				)
+
+
+		/////////////////////////////////////////////////////////////////////////
+		//////////   UPDATE LINES FOR KYOTO COMMITMENTS ON AREA CHART  //////////
+		/////////////////////////////////////////////////////////////////////////
+
+		// Beginning of Kyoto protocol phases
+		this.kp_0_line
+			.attr("x1", xScale(kp_beginning))  
+			.attr("x2", xScale(kp_beginning))  
+			.transition(t)
+
+		this.kp_0_text
+			.attr("x", function(){ return xScale(kp_beginning)})
+			.transition(t)
+
+		// Line for Kyoto 1st commitment
+		this.kp_1_line
+			.attr("x1", xScale(kp_commitment_1))  
+			.attr("x2", xScale(kp_commitment_1))  
+			.transition(t)
+
+		this.kp_1_text
+			.attr("x", function(){ return xScale(kp_commitment_1)})
+			.transition(t)
+
+		// Line for Kyoto 2nd commitment
+		this.kp_2_line
+			.transition(t)
+			.attr("x1", xScale(kp_commitment_2))
+			.attr("x2", xScale(kp_commitment_2))
+
+		this.kp_2_text
+			.transition(t)
+			.attr("x", function(){ return xScale(kp_commitment_2) - 20})
+
+
+		///////////////////////////////////////////////////////////
+		//////////			  	   UPDATE AXIS    	  			 //////////
+		///////////////////////////////////////////////////////////
+
+		const xAxis = d3.axisBottom(xScale);
+		this.xSvgAxis
+			.attr('transform', `translate(0, ${height})`)
+			.transition(t)
+			.call(xAxis)
+
+		const yAxis = d3.axisLeft(yScale);
+		this.ySvgAxis
+			.transition(t)
+			.call(yAxis
+			// .tickPadding(15)
+			.tickFormat(d3.formatPrefix(".1", 1e3)));
+
+		this.title
+			.transition(t)
+			.attr("x", (width / 2))             
+			.attr("y", 0 - (areaChartMargin.top / 2))
+			.text(country + " GHG emissions");
+	}
+}
+
+
+function loadAreaChart(country) {
+
+	// check if country selected on map exist in database
+	if (!(country in dataByGas)) {
+		alert("Sorry, emissions data for " + country + " is not available.");
+		return;
+	}
+
+	// load data for different gases
+	co2_emissions = loadGasDataByCountry(country, "CO2");
+	ch4_emissions = loadGasDataByCountry(country, "CH4");
+	n2o_emissions = loadGasDataByCountry(country, "N2O");
+
+	// calculate total emissions by summing all gases
+	total_emissions = [];
+	co2_emissions.forEach(function callback(element, index) {
+		y_total = parseInt(co2_emissions[index].y) + parseInt(ch4_emissions[index].y) + parseInt(n2o_emissions[index].y);
+		total_emissions.push({y: y_total, date: co2_emissions[index].date});
+	})
+
+	const svg_element_id = 'plot';
+	let	svg = d3.select('#' + svg_element_id);
+
+	if (!areaChart) {
+		// creates a new Area Chart
+		d3.selectAll("#plot > *").remove();
+
+		svg = d3.select('#' + svg_element_id)
+			.attr("width", width + areaChartMargin.left + areaChartMargin.right)
+			.attr("height", height + areaChartMargin.top + areaChartMargin.bottom)
+			.append("g")
+			.attr('transform', `translate(${areaChartMargin.left}, ${areaChartMargin.top})`);
+
+
+		areaChart = new AreaChart(svg, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country, x_value_range);
+
+		/////////////// ///// //////////////////
+		/////////////// BRUSH //////////////////
+		/////////////// ///// //////////////////
+
+		// Create a context for a brush
+		var contextXScale = d3.scaleTime()
+			.range([0, brushContextWidth])
+			.domain(x_value_range);
+
+		var contextAxis = d3.axisBottom(contextXScale)
+			.tickSize(brushContextHeight)
+			.tickPadding(-10);
+
+		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
+
+		xScale = d3.scaleTime()
+			.domain(x_value_range)
+			.range([0, 600]);
+
+		yContentScale = d3.scaleLinear()
+			.domain(y_value_range)
+			.range([brushContextHeight, 0]);
+
+
+		var brush = d3.brushX()
+		.extent([
+			[contextXScale.range()[0], 0],
+			[contextXScale.range()[1], brushContextHeight]
+		])
+		.on("brush", onBrush);
+
+		let context = svg.append("g")
+		.attr("class", "context")
+		.attr("transform", "translate(0," + height + ")");
+
+		this.contextArea = context.append("path")
+			.datum(total_emissions)
+			.attr("fill", "#E8E8E8")
+			.attr("stroke", "#69b3a2")
+			.attr("stroke-width", 1)
+			.attr("class", "myArea total_emissions")
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date)	})
+				.y0(yContentScale(0))
+				.y1(function(d) { return yContentScale(d.y) })
+				)
+
+		/////////////////////////////////////////////////////////////////////////
+		//////////  PLOT LINES FOR THE KYOTO COMMITMENTS ON BRUSH AREA //////////
+		/////////////////////////////////////////////////////////////////////////
+
+		// Beginning of Kyoto protocol phases
+		context.append("line")
+			.attr("x1", xScale(kp_beginning))  
+			.attr("y1", 0)
+			.attr("x2", xScale(kp_beginning))  
+			.attr("y2", brushContextHeight + 10)
+			.attr("class", "kyoto-begining-lines")
+			.attr("clip-path", "url(#clip-rect")
+
+		context.append("text")
+			.attr("y", brushContextHeight + 20)
+			.attr("x", function(){ return xScale(kp_beginning)})
+			.attr("class", "kyoto-commitment-labels")
+			.text("KP Beginning")
+			.attr("clip-path", "url(#clip-rect")
+
+		// Line for Kyoto 1st commitment
+		context.append("line")
+			.attr("x1", xScale(kp_commitment_1))  
+			.attr("y1", 0)
+			.attr("x2", xScale(kp_commitment_1))  
+			.attr("y2", brushContextHeight + 10)
+			.attr("class", "kyoto-commitment-lines")
+			.attr("clip-path", "url(#clip-rect")
+
+		context.append("text")
+			.attr("y", brushContextHeight + 20)
+			.attr("x", function(){ return xScale(kp_commitment_1)})
+			.attr("class", "kyoto-commitment-labels")
+			.attr("clip-path", "url(#clip-rect")
+			.text("KP 1st commitment ")
+			.attr("clip-path", "url(#clip-rect")
+
+		// Line for Kyoto 2nd commitment
+		context.append("line")
+			.attr("x1", xScale(kp_commitment_2))
+			.attr("y1", 0)
+			.attr("x2", xScale(kp_commitment_2))
+			.attr("y2", brushContextHeight + 10)
+			.attr("class", "kyoto-commitment-lines")
+			.attr("clip-path", "url(#clip-rect")
+
+		context.append("text")
+			.attr("y", brushContextHeight + 20)
+			.attr("x", function(){ return xScale(kp_commitment_2) - 20})
+			.attr("class", "kyoto-commitment-labels")
+			.text("KP 2nd commitment")
+			.attr("clip-path", "url(#clip-rect")
+
+		context.append("g")
+			.attr("class", "x axis top")
+			.attr("transform", "translate(0,0)")
+			.call(contextAxis)
+
+		context.append("g")
+			.attr("class", "x brush")
+			.call(brush)
+			.selectAll("rect")
+			.attr("y", 0)
+			.attr("height", brushContextHeight);
+
+		context.append("text")
+			.attr("class", "instructions")
+			.attr("transform", "translate(0," + (brushContextHeight + 20) + ")")
+			.text('Click and drag above to zoom or pan the data');
+
+		// Brush handler. Get time-range from a brush and pass it to the charts. 
+		function onBrush() {
+			var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
+			x_value_range = [b[0], b[1]];
+			areaChart.update(svg, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country, x_value_range);
+		}
+	} else {
+		// updates existing Area Chart with transitions
+		areaChart.update(svg, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country, x_value_range);
+
+		// update brush area content
+		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
+
+		yContentScale = d3.scaleLinear()
+			.domain(y_value_range)
+			.range([brushContextHeight, 0]);
+
+		let t = d3.transition()
+		.duration(750)
+		.ease(d3.easeLinear);
+				
+		this.contextArea
+			.datum(total_emissions)
+			.transition(t)		
+			.attr("d", d3.area()
+				.x(function(d) { return xScale(d.date)	})
+				.y0(yContentScale(0))
+				.y1(function(d) { return yContentScale(d.y) })
+				)
+	}
+}
+
 
 function displayAreaChart() {
 	const PATH = "data/unfcc/time_series"
 
-	// prepare the data here
+	///////////////////////////////////////////////////////////
+	//////////	LOAD AND PREAPRE DATA FOR AREA CHART ////////// 
+	///////////////////////////////////////////////////////////  
+
+	// load and prepare the data here
 	d3.queue()
 	.defer(d3.csv, PATH + "/data_by_gas/Time Series - CO₂ total with LULUCF, in kt.csv", function(row) {
 			dataByGas[row.Party] = {"CO2_LULU": []};
@@ -63,9 +626,8 @@ function displayAreaChart() {
 	
 	
 		// Function executed after data has been loaded:
-		function ready(error, topo) {
+		function ready(error) {
 			if (error) throw error;
-			// console.log("data_gas: ", dataByGas);
 
 			let countries = getAllCountries(dataByGas);
 			let select = document.getElementById("countryDropdown"); 
@@ -87,407 +649,12 @@ function displayAreaChart() {
 			country = "United States of America";
 			loadAreaChart(country);
 		
-			// plot line based on selected country
+			// load area chart based on selected country
 			$('#countryDropdown li').on('click', function(){
 				country = $(this).text();
 				loadAreaChart(country);
 			});
 		}
-	}
-
-
-/*
-	Run the action when we are sure the DOM has been loaded
-	https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded
-	Example:
-	whenDocumentLoaded(() => {
-		console.log('loaded!');
-		document.getElementById('some-element');
-	});
-*/
-
-function whenDocumentLoaded(action) {
-	if (document.readyState === "loading") {
-		document.addEventListener("DOMContentLoaded", action);
-	} else {
-		console.log("ACTION");
-		// `DOMContentLoaded` already fired
-		action();
-	}
-	
-
-
-}
-
-
-const MARGIN = { top: 50, right: 170, bottom: 50, left: 50 };
-
-class AreaChart {
-	constructor(svg_element_id, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country) {
-		const height = 400;
-		const width = 600;
-
-		this.country = country;
-		this.total_emissions = total_emissions;
-		this.co2_emissions = co2_emissions;
-		this.ch4_emissions = ch4_emissions;
-		this.n2o_emissions = n2o_emissions;
-
-		// create a list of keys
-		let keys = ["Total emissions", "CO2 emissions", "CH4 emissions", "N2O emissions"]
-
-		let areaChartColors = d3.scaleOrdinal()
-			.domain(keys)
-			.range(["#13243c", "#122f57", "#2e516f", "#3b7681"])
-
-		this.svg = d3.select('#' + svg_element_id)
-			.attr("width", width + MARGIN.left + MARGIN.right)
-			.attr("height", height + MARGIN.top + MARGIN.bottom)
-			.append("g")
-			.attr('transform', `translate(${MARGIN.left}, ${MARGIN.top})`);
-
-		this.svg = this.svg.append('g');
-
-		// const x_value_range = [d3.min(total_emissions, d => d.date), d3.max(total_emissions, d => d.date)];
-		const x_value_range = [d3.min(total_emissions, d => d.date), new Date(2020, 0, 1, 0, 0, 0, 0)];
-		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
-
-		const xScale = d3.scaleTime()
-			.domain(x_value_range)
-			.range([0, width]);
-
-		const yScale = d3.scaleLinear()
-			.domain(y_value_range)
-			.range([height, 0]);
-
-		// scatter plot
-		// this.svg.selectAll("circle")
-		// 	.data(total_emissions)
-		// 	.enter()
-		// 	.append("circle")
-		// 		.attr("r", 2) // radius
-		// 		.attr("cx", d => xScale(d.date)) // position, rescaled
-		// 		.attr("cy", d => yScale(d.y));
-			
-				
-		// line plot
-		// this.svg.append("path")
-		// .datum(total_emissions)
-		// .attr("stroke", "black")
-		// .style("fill", "none")
-		// .attr("stroke-width", 0.5)
-		// .attr("d", d3.line()
-		// 	.x(function(d) { return xScale(d.date) })
-		// 	.y(function(d) { return yScale(d.y) }))
-
-
-		// area plot
-		this.svg_total_emissions = this.svg.append("path")
-		.datum(this.total_emissions)
-		.attr("fill", areaChartColors("Total emissions"))
-		.attr("stroke", "#69b3a2")
-		.attr("stroke-width", 1.5)
-		.attr("class", "myArea total_emissions")
-		.attr("d", d3.area()
-			.x(function(d) { return xScale(d.date)	})
-			.y0(yScale(0))
-			.y1(function(d) { return yScale(d.y) })
-			)
-
-		this.svg_co2_emissions = this.svg.append("path")
-		.datum(this.co2_emissions)
-		.attr("fill", areaChartColors("CO2 emissions"))
-		.attr("stroke", "#69b3a2")
-		.attr("stroke-width", 1.5)
-		.attr("class", "myArea co2_emissions")
-		.attr("d", d3.area()
-			.x(function(d) { return xScale(d.date) })
-			.y0(yScale(0))
-			.y1(function(d) { return yScale(d.y) })
-			)
-
-		this.svg_ch4_emissions = this.svg.append("path")
-		.datum(this.ch4_emissions)
-		.attr("fill", areaChartColors("CH4 emissions"))
-		.attr("stroke", "#69b3a2")
-		.attr("stroke-width", 1.5)
-		.attr("class", "myArea ch4_emissions")
-		.attr("d", d3.area()
-			.x(function(d) { return xScale(d.date) })
-			.y0(yScale(0))
-			.y1(function(d) { return yScale(d.y) })
-			)
-
-		this.svg_n2o_emissions = this.svg.append("path")
-		.datum(this.n2o_emissions)
-		.attr("fill", areaChartColors("N2O emissions"))
-		.attr("stroke", "#69b3a2")
-		.attr("stroke-width", 1.5)
-		.attr("class", "myArea n2o_emissions")
-		.attr("d", d3.area()
-			.x(function(d) { return xScale(d.date) })
-			.y0(yScale(0))
-			.y1(function(d) { return yScale(d.y) })
-			)
-
-		// print lines for the kyoto commitments
-		let kp_beginning = new Date(2008, 0, 1, 0, 0, 0, 0);
-		let kp_commitment_1 = new Date(2013, 0, 1, 0, 0, 0, 0);
-		let kp_commitment_2 = new Date(2020, 0, 1, 0, 0, 0, 0);
-
-
-		// Beginning of Kyoto protocol phases
-		this.svg.append("line")
-			.attr("x1", xScale(kp_beginning))  
-			.attr("y1", 0 + 30)
-			.attr("x2", xScale(kp_beginning))  
-			.attr("y2", height)
-			.attr("class", "kyoto-begining-lines")
-
-		this.svg.append("text")
-			.attr("y", 20)
-			.attr("x", function(){ return xScale(kp_beginning)})
-			.attr("class", "kyoto-commitment-labels")
-			.text("KP Beginning");
-
-		// Line for Kyoto 1st commitment
-		this.svg.append("line")
-			.attr("x1", xScale(kp_commitment_1))  
-			.attr("y1", 0 + 30)
-			.attr("x2", xScale(kp_commitment_1))  
-			.attr("y2", height)
-			.attr("class", "kyoto-commitment-lines")
-
-		this.svg.append("text")
-			.attr("y", 20)
-			.attr("x", function(){ return xScale(kp_commitment_1)})
-			.attr("class", "kyoto-commitment-labels")
-			.text("KP 1st commitment ");
-
-		// Line for Kyoto 2nd commitment
-		this.svg.append("line")
-			.attr("x1", xScale(kp_commitment_2))
-			.attr("y1", 0 + 30)
-			.attr("x2", xScale(kp_commitment_2))
-			.attr("y2", height)
-			.attr("class", "kyoto-commitment-lines")
-
-		this.svg.append("text")
-			.attr("y", 20)
-			.attr("x", function(){ return xScale(kp_commitment_2)})
-			.attr("class", "kyoto-commitment-labels")
-			.text("KP 2nd commitment");
-
-		// // Kyoto phase areas
-		// let kp_phase_1_data = [
-		// 	{y: "8000000", date: new Date(2008, 0, 1, 0, 0, 0, 0) },
-		// 	{y: "8000000", date: new Date(2013, 0, 1, 0, 0, 0, 0) }
-		// ]
-
-		// this.kp_phase_1 = this.svg.append("path")
-		// 	.datum(kp_phase_1_data)
-		// 	.attr("fill", "green")
-		// 	.attr("fill-opacity","0.1")
-		// 	.attr("stroke", "#69b3a2")
-		// 	.attr("stroke-width", 0)
-		// 	.attr("d", d3.area()
-		// 		.x(function(d) { return xScale(d.date) })
-		// 		.y0(yScale(0))
-		// 		.y1(function(d) { return yScale(d.y) })
-		// 		)
-
-		// let kp_phase_2_data = [
-		// 	{y: "8000000", date: new Date(2013, 0, 1, 0, 0, 0, 0) },
-		// 	{y: "8000000", date: new Date(2020, 0, 1, 0, 0, 0, 0) }
-		// ]
-
-		// this.kp_phase_1 = this.svg.append("path")
-		// 	.datum(kp_phase_2_data)
-		// 	.attr("fill", "green")
-		// 	.attr("fill-opacity","0.2")
-		// 	.attr("stroke", "#69b3a2")
-		// 	.attr("stroke-width", 0)
-		// 	.attr("d", d3.area()
-		// 		.x(function(d) { return xScale(d.date) })
-		// 		.y0(yScale(0))
-		// 		.y1(function(d) { return yScale(d.y) })
-		// 		)
-			
-		// create axis
-		const xAxis = d3.axisBottom(xScale);
-		this.xSvgAxis = this.svg.append("g")
-			.attr('class', 'axis')
-			.attr('class', 'text')
-			.attr('transform', `translate(0, ${height})`)
-			.call(xAxis)
-
-		const yAxis = d3.axisLeft(yScale);
-		this.ySvgAxis = this.svg.append("g")
-			.attr('class', 'axis')
-			.attr('class', 'text')
-			.call(yAxis
-			// .tickPadding(15)
-			.tickFormat(d3.formatPrefix(".1", 1e3)));
-
-		this.title = this.svg.append("text")
-        .attr("x", (width / 2))             
-        .attr("y", 0 - (MARGIN.top / 2))
-        .attr("text-anchor", "middle")  
-        .style("font-size", "16px") 
-        // .style("text-decoration", "underline")  
-        .text(this.country + " GHG emissions");
-
-		// legend = this.svg.append("g")
-		// 	.attr("class","legend")
-		// 	.attr("transform","translat100,100)")
-		// 	.style("font-size","12px")
-		// 	.call(d3.legend)
-
-		//////////////////////////////
-    // HIGHLIGHT GROUP //    inspired by https://www.d3-graph-gallery.com/graph/stackedarea_template.html
-    //////////////////////////////
-
-    // What to do when one group is hovered
-    var highlight = function(d){
-      // reduce opacity of all groups
-      d3.selectAll(".myArea").style("opacity", .1)
-      // expect the one that is hovered
-      d3.select("."+d.toLowerCase().replace(/ /g,"_")).style("opacity", 1)
-    }
-
-    // And when it is not hovered anymore
-    var noHighlight = function(d){
-      d3.selectAll(".myArea").style("opacity", 1)
-    }
-
-
-		//////////////////////////////
-    // LEGEND // 	inspired by https://www.d3-graph-gallery.com/graph/stackedarea_template.html
-    //////////////////////////////
-		
-
-	// Add one dot in the legend for each name.
-		var size = 20
-		this.svg.selectAll("mydots")
-			.data(keys)
-			.enter()
-			.append("rect")
-				.attr("x", width + 40)
-				.attr("y", function(d,i){ return 140 + i*(size+15)}) // 100 is where the first dot appears. 25 is the distance between dots
-				.attr("width", size)
-				.attr("height", size)
-				.style("fill", function(d){ return areaChartColors(d)})
-				.attr("class", "area-chart-legend")
-				.on("mouseover", highlight)
-        .on("mouseleave", noHighlight)
-
-		// Add one dot in the legend for each name.
-		this.svg.selectAll("mylabels")
-			.data(keys)
-			.enter()
-			.append("text")
-				.attr("x", width + 40 + size*1.2)
-				.attr("y", function(d,i){ return 140 + i*(size+15) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-				.style("fill", function(d){ return areaChartColors(d) })
-				.text(function(d){ return d})
-				.attr("text-anchor", "left")
-				.attr("font-size", "0.8em")
-				.style("alignment-baseline", "middle")
-				.attr("class", "area-chart-legend")
-				.on("mouseover", highlight)
-        .on("mouseleave", noHighlight)
-	}
-
-	update(svg_element_id, total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country) {
-		const height = 400;
-		const width = 600;
-
-		// const x_value_range = [d3.min(total_emissions, d => d.date), d3.max(total_emissions, d => d.date)];
-		const x_value_range = [d3.min(total_emissions, d => d.date), new Date(2020, 0, 1, 0, 0, 0, 0)];
-		const y_value_range = [0, 1.2 * d3.max(total_emissions, d => parseInt(d.y))];
-
-		const xScale = d3.scaleTime()
-			.domain(x_value_range)
-			.range([0, width]);
-
-		const yScale = d3.scaleLinear()
-			.domain(y_value_range)
-			.range([height, 0]);
-
-		
-		var t = d3.transition()
-			.duration(750)
-			.ease(d3.easeLinear);
-
-		
-		this.svg.selectAll("circle")
-			.data(total_emissions)
-			.transition(t)		
-			.attr("r", 2) // radius
-			.attr("cx", d => xScale(d.date)) // position, rescaled
-			.attr("cy", d => yScale(d.y));
-
-
-		this.svg_total_emissions
-			.datum(total_emissions)
-			.transition(t)		
-			.attr("d", d3.area()
-				.x(function(d) { return xScale(d.date) })
-				.y0(yScale(0))
-				.y1(function(d) { return yScale(d.y) })
-				)
-	
-		this.svg_co2_emissions
-			.datum(co2_emissions)
-			.transition(t)		
-			.attr("d", d3.area()
-				.x(function(d) { return xScale(d.date) })
-				.y0(yScale(0))
-				.y1(function(d) { return yScale(d.y) })
-				)
-	
-		this.svg_ch4_emissions 
-			.datum(ch4_emissions)
-			.transition(t)		
-			.attr("d", d3.area()
-				.x(function(d) { return xScale(d.date) })
-				.y0(yScale(0))
-				.y1(function(d) { return yScale(d.y) })
-				)
-	
-		this.svg_n2o_emissions
-			.datum(n2o_emissions)
-			.transition(t)		
-			.attr("d", d3.area()
-				.x(function(d) { return xScale(d.date) })
-				.y0(yScale(0))
-				.y1(function(d) { return yScale(d.y) })
-				)
-
-		const xAxis = d3.axisBottom(xScale);
-		this.xSvgAxis
-			.attr('transform', `translate(0, ${height})`)
-			.transition(t)
-			.call(xAxis)
-
-		const yAxis = d3.axisLeft(yScale);
-		this.ySvgAxis
-			.transition(t)
-			.call(yAxis
-			// .tickPadding(15)
-			.tickFormat(d3.formatPrefix(".1", 1e3)));
-
-		this.title
-			.transition(t)
-			.attr("x", (width / 2))             
-			.attr("y", 0 - (MARGIN.top / 2))
-			.text(country + " GHG emissions");
-	}
-}
-
-
-function addScatterPlotLegend() {
-
 }
 
 
@@ -497,13 +664,10 @@ function getAllCountries(dataByGas) {
 		countries.push(key);
 	}
 	return countries;
-
 }
 
 
-function loadGasByCountry(country, gas) {
-	// prepare the data here
-	
+function loadGasDataByCountry(country, gas) {
 	const VALUES = dataByGas[country][gas];
 	const YEARS = Array.from(Array(29), (elem, index) => 1990 + index);
 
@@ -518,11 +682,14 @@ function loadGasByCountry(country, gas) {
 		temp_dict['date'] = new Date(+year, 0, 1, 0, 0, 0, 0);
 		
 		dataArray.push(temp_dict);
-
 	})	
 	return dataArray;
 }
 
+
+///////////////////////////////////////////////////////////
+//////////				  		 MAP SECTION	  				 ////////// 
+/////////////////////////////////////////////////////////// 
 
 function displayMap() {
 
@@ -756,37 +923,10 @@ function mapProgressBar() {
 }
 
 
-function loadAreaChart(country) {
-	
-	// check if country selected on map exist in database
-	if (!(country in dataByGas)) {
-		alert("Sorry, emissions data for " + country + " is not available.");
-		return;
-	}
+///////////////////////////////////////////////////////////
+//////////				  	BAR CHART SECTION 				 ////////// 
+/////////////////////////////////////////////////////////// 
 
-	// load data for different gases
-	co2_emissions = loadGasByCountry(country, "CO2");
-	ch4_emissions = loadGasByCountry(country, "CH4");
-	n2o_emissions = loadGasByCountry(country, "N2O");
-
-	// calculate total emissions by summing all gases
-	total_emissions = [];
-	co2_emissions.forEach(function callback(element, index) {
-		y_total = parseInt(co2_emissions[index].y) + parseInt(ch4_emissions[index].y) + parseInt(n2o_emissions[index].y);
-		total_emissions.push({y: y_total, date: co2_emissions[index].date});
-	})
-
-	if (!areaChart) {
-		// creates a new Area Chart
-		d3.selectAll("#plot > *").remove();
-		areaChart = new AreaChart('plot', total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country);
-	} else {
-		// updates existing Area Chart with transitions
-		areaChart.update('plot', total_emissions, co2_emissions, ch4_emissions, n2o_emissions, country);
-	}
-}
-
-/////// CHART /////
 
 ///Variables///
 //////////////////////////////////
@@ -909,7 +1049,7 @@ function displayBarChart() {
 		// Event listener to update the chart when the user selects a country on the plot above
 		$('#countryDropdown li').on('click', function(){
 			selected_country = $(this).text();;
-			console.log(selected_country)
+			// console.log(selected_country)
 			updateBarChart();
 		});
     }
@@ -925,10 +1065,10 @@ function createBarChart () {
 
 	// Filtering the data loaded to keep only the k best (and k worst) country in 1990 and target type.
 	// Note that the "best" ones in 1990 are the ones with the k highest goals.
-	console.log(data_target);
-	console.log(year);
+	// console.log(data_target);
+	// console.log(year);
 	let data = ranking_reduction();
-	console.log(data);
+	// console.log(data);
 	let topk_countries = data[0];
 	let topk_reduction = data[1];
 	let topk_kyoto_goal = data[2];
@@ -1160,8 +1300,8 @@ function ranking_reduction() {
 
 	else {
 		let data = data_target[target];
-		console.log(data)
-		console.log(k)
+		// console.log(data)
+		// console.log(k)
 		Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
 		{
 			if(ind < k | ind >= Object.keys(data).length - k){
@@ -1317,6 +1457,20 @@ function updateBarChart() {
 
 }
 
+
+
+/*
+	Run the action when we are sure the DOM has been loaded
+	https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded
+*/
+function whenDocumentLoaded(action) {
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", action);
+	} else {
+		// `DOMContentLoaded` already fired
+		action();
+	}
+}
 
 whenDocumentLoaded(() => {
 	displayMap();
