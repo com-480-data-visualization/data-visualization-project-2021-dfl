@@ -697,17 +697,23 @@ function displayMap() {
 	height = 450;
 
 	function switchColors(year){
+		let data = d3.map();
 		d3.queue()
 			.defer(d3.csv, "https://raw.githubusercontent.com/DAL12/Files/master/ghg" + year + ".csv", function(d) { data.set(d.code, +d.emission);})
 			.await(ready);
 		
 		function ready(error, topo) {
+
 		
 			if (error) throw error;
 
-			svg.select("g")
+			let svg = d3.select("#my_dataviz").select("g")
+
+			svg
 			.selectAll("path")
-			.data(topo.features)
+			.transition()
+			.delay(2)
+   			.duration(10)
 			.attr("fill", function (d) {
 				if (data.get(d.id)) {
 					return color(data.get(d.id));
@@ -715,8 +721,8 @@ function displayMap() {
 				else {
 					return d3.rgb(220,220,220);
 				}
-				})
-			} 
+				}).style("stroke", "white")
+			}
 	}
 
 	function createMapClick(year) {
@@ -728,6 +734,9 @@ function displayMap() {
 				.attr("width", width)
 				.attr("height", height);
 		
+		let tooltip = d3.select("#map-cont")
+						.append("div")
+						.attr("class", "tooltip")
 		// Map and projection
 		let projection = d3.geoEquirectangular() 
 			.scale(100);
@@ -736,8 +745,7 @@ function displayMap() {
 		let data = d3.map();
 		let color = d3.scaleSequential()
 					  .domain([0, 2000000])
-					  .interpolator(d3.interpolateYlGnBu);
-		
+					  .interpolator(d3.interpolateYlGnBu);	
 		
 		// Load external data and boot
 		d3.queue()
@@ -782,7 +790,20 @@ function displayMap() {
 				.classed("clickable", true)
 				.on("click", function(d, i) {
 					// load Area Chart for country clicked on map
+					console.log(d.id)
 					loadAreaChart(countryCodeName[d.id]);
+				})		
+				.on("mouseover",function(d,i){
+					return tooltip.style("hidden", false).html(d.properties.name);
+				})
+				.on("mousemove",function(d){
+					tooltip.classed("hidden", false)
+						   .style("top", (d3.event.pageY) + "px")
+						   .style("left", (d3.event.pageX + 10) + "px")
+						   .html(d.properties.name);
+				})
+				.on("mouseout",function(d,i){
+					tooltip.classed("hidden", true);
 				});
 			} 
 			
@@ -812,9 +833,8 @@ function displayMap() {
 					.on('onchange', val => {switchPlots(d3.timeFormat('%Y')(val));});
 
 	function switchPlots(time) {
-		//d3.select("#map-cont").select("#my_dataviz").remove();
-		//createMapClick(time);
-		//switchColors(time)
+		switchColors(time);
+		removeEvenYears();
 		year = time;
 		updateBarChart();
 	}
@@ -828,6 +848,23 @@ function displayMap() {
                 .attr('transform', 'translate(180,20)');
     
     gTime.call(sliderTime);
+
+	function removeEvenYears() {
+
+		let ticks_to_rm = d3.selectAll(".tick text");
+	
+		ticks_to_rm.each(function(_,i){
+			if(i%2==0) {
+				d3.select(this).attr("fill", "white");
+			}
+			else {
+				d3.select(this).attr("fill", "grey");
+			}
+		});
+
+	}
+
+	removeEvenYears()
     
     
 	//
