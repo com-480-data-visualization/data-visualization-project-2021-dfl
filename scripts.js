@@ -696,6 +696,29 @@ function displayMap() {
 	width = 800;
 	height = 450;
 
+	function switchColors(year){
+		d3.queue()
+			.defer(d3.csv, "https://raw.githubusercontent.com/DAL12/Files/master/ghg" + year + ".csv", function(d) { data.set(d.code, +d.emission);})
+			.await(ready);
+		
+		function ready(error, topo) {
+		
+			if (error) throw error;
+
+			svg.select("g")
+			.selectAll("path")
+			.data(topo.features)
+			.attr("fill", function (d) {
+				if (data.get(d.id)) {
+					return color(data.get(d.id));
+				}
+				else {
+					return d3.rgb(220,220,220);
+				}
+				})
+			} 
+	}
+
 	function createMapClick(year) {
 		
 		// The svg
@@ -789,8 +812,9 @@ function displayMap() {
 					.on('onchange', val => {switchPlots(d3.timeFormat('%Y')(val));});
 
 	function switchPlots(time) {
-		d3.select("#map-cont").select("#my_dataviz").remove();
-		createMapClick(time);
+		//d3.select("#map-cont").select("#my_dataviz").remove();
+		//createMapClick(time);
+		//switchColors(time)
 		year = time;
 		updateBarChart();
 	}
