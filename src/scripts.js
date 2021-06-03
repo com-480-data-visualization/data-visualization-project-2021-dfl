@@ -1121,7 +1121,6 @@ function mapProgressBar() {
 ////////////////	BAR CHART SECTION	///////////////////	
 /////////////////////////////////////////////////////////// 
 
-
 // Initializing objects to save csv content
 let data_target = {}; // will store the reduction emission target of each country
 let kp_percentage = {}; // will store the reduction emission target of each country in percentage (used for the Area Plot)
@@ -1171,8 +1170,13 @@ let width_mark = 2;
 let x_Scale = d3.scaleLinear().range([- (w_chart/2 - padding_chart), w_chart/2 - padding_chart]);
 let y_Scale = d3.scaleBand().rangeRound([0, h_chart - xaxis_height_padding - 3]).paddingInner(0.35);
 
+//////////////////////////////////////////////////////
+/////////LOAD DATA AND DISPLAY ONCE LOADED ///////////
+//////////////////////////////////////////////////////
 
 function displayBarChart() {
+
+	const PATH = "data/unfcc/time_series"
 
     // Reading csv and pouring their content in their respect data object
     d3.queue()
@@ -1183,13 +1187,13 @@ function displayBarChart() {
                 data_target["target2noLULUCF"][d.Party] = -parseFloat(d.target2no);
 								kp_percentage[d.Party] = {"kp1": -parseFloat(d["Kyoto target 2008-2012"]), "kp2": -parseFloat(d["Kyoto target 2013-2020"])};
 							})
-            .defer(d3.csv, "data/GHG_LULUCF.csv", function(d) {
+            .defer(d3.csv, PATH + "/data_for_greenhouse_gas_total/Time Series - GHG total with LULUCF, in kt CO₂ equivalent.csv", function(d) {
                 for (i = 1990; i <= 2018; i++) {
                 data_GHG_LULUCF[String(i)][d.Party] = parseFloat(d[1990]) - parseFloat(d[String(i)]); // storing the reduction compared to the year 1990
                 }
 
         })
-            .defer(d3.csv, "data/GHG_no_LULUCF.csv", function(d) {
+            .defer(d3.csv, PATH + "/data_for_greenhouse_gas_total/Time Series - GHG total without LULUCF, in kt CO₂ equivalent.csv", function(d) {
                 for (i = 1990; i <= 2018; i++) {
                 data_GHG_no_LULUCF[String(i)][d.Party] = parseFloat(d[1990]) - parseFloat(d[String(i)]);
                 }
@@ -1500,9 +1504,9 @@ function ranking_reduction() {
 /////////UPDATE FUNCTION//////////
 //////////////////////////////////
 
-// Function to update the plot when the user changes the parameters
 function updateBarChart() {
-            
+    // Function to update the plot when the user changes the parameters
+
 	// Update the target depending on the year:
 	if (year > 2012) {
 		target = "target2";
@@ -1529,18 +1533,11 @@ function updateBarChart() {
 		createBarChart();
 	}
 
-	//console.log(target)
 	// with the new variables target, selected_data and k: find the new ranking
 	let data = ranking_reduction();
 	let topk_countries = data[0];
 	let topk_reduction = data[1];
 	let topk_kyoto_goal = data[2];
-
-
-	// Console log for codding purposes (TODO: Delete them at the end)
-	// console.log(topk_countries)
-	// console.log(topk_kyoto_goal)
-	// console.log(topk_reduction)
 	
 	// Redefining Scales
 	x_Scale.domain([-d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)]),d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)])])
@@ -1641,12 +1638,11 @@ function updateBarChart() {
 
 }
 
-
-
 /*
 	Run the action when we are sure the DOM has been loaded
 	https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded
 */
+
 function whenDocumentLoaded(action) {
 	if (document.readyState === "loading") {
 		document.addEventListener("DOMContentLoaded", action);
