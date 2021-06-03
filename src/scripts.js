@@ -675,14 +675,14 @@ function lodaDataAndDisplayAreaChart() {
 			}
 			
 			// load default country when site loads
-			country = "United States of America";
-			loadAreaChart(country);
+			loadAreaChart(selected_country);
 		
 			// load area chart based on selected country
 			$('#countryDropdown li').on('click', function(){
-				country = $(this).text();
-				loadAreaChart(country);
-				displayDynamicText(country);
+				selected_country = $(this).text();
+				loadAreaChart(selected_country);
+				displayDynamicText(selected_country);
+				updateBarChart();
 			});
 		}
 }
@@ -1108,17 +1108,13 @@ function mapProgressBar() {
 
 
 ///////////////////////////////////////////////////////////
-//////////				  	BAR CHART SECTION 				 ////////// 
+////////////////	BAR CHART SECTION	///////////////////	
 /////////////////////////////////////////////////////////// 
 
 
-///Variables///
-//////////////////////////////////
-////////LOADING THE DATA//////////
-//////////////////////////////////
-
 // Initializing objects to save csv content
 let data_target = {}; // will store the reduction emission target of each country
+let kp_percentage = {}; // will store the reduction emission target of each country in percentage (used for the Area Plot)
 let data_GHG_LULUCF = {}; //will store the reduction emission (compared to 1990) achieved for every year (and every country) with LULUCF
 let data_GHG_no_LULUCF = {}; //will store the reduction emission (compared to 1990) achieved for every year (and every country) without LULUCF
 let years = []
@@ -1136,6 +1132,9 @@ for (i = 1990; i <= 2018; i++) {
 	years.push(i);
 } 
 
+//////////////////////////////////////////////
+//////// DEFINING GLOBAL VARIABLES	//////////
+//////////////////////////////////////////////
 
 let svg_chart;
 let node_g_target;
@@ -1143,14 +1142,13 @@ let node_g_em;
 let node_g_flags;
 let node_g_mark;
 let xAxis;
-let selected_country = "United States of America";
 let k_new;
 let k;
 let LULUCF = 0;
+let selected_country = "United States of America"; //default selected country
 let target = "target1noLULUCF"; //default of the dropdown menu
 let year = 1990; //default of the dropdown menu
 let selected_data = data_GHG_no_LULUCF; //default of the dropdown menu
-let kp_percentage = {};
 
 // Definition SVG parameters
 let w_chart = document.getElementById('chart').clientWidth - 2 * 16 ;//take into account the 1rem padding of svg
@@ -1169,7 +1167,6 @@ function displayBarChart() {
     // Reading csv and pouring their content in their respect data object
     d3.queue()
             .defer(d3.csv, "data/Kyoto_targets.csv", function(d) {
-								// console.log("d: ", d);
                 data_target["target1"][d.Party] = -parseFloat(d.target1); // minus to convert it to a "reduction" in emission
                 data_target["target1noLULUCF"][d.Party] = -parseFloat(d.target1no);
                 data_target["target2"][d.Party] = -parseFloat(d.target2);
@@ -1189,17 +1186,12 @@ function displayBarChart() {
 
         })
             .await(ready); // Once the loading is over, we enter the ready function that takes care of the plotting
-    //////////////////////////////////
-    ////////PLOTTING FUNCTION/////////
-    //////////////////////////////////
 
     // Function executed after data has been loaded:
     function ready(error) {
 
         //if error during the logging:
         if (error) throw error;
-
-				// console.log("kp_percentage", kp_percentage);
 
 		k = Object.keys(data_target[target]).length/2;
 		k_new = k;
@@ -1235,17 +1227,15 @@ function displayBarChart() {
 			updateBarChart();
 			loadAreaChart(selected_country);
 		})
-
-		// Event listener to update the chart when the user selects a country on the plot above
-		$('#countryDropdown li').on('click', function(){
-			selected_country = $(this).text();;
-			// console.log(selected_country)
-			updateBarChart();
-		});
     }
 }
 
+//////////////////////////////////
+////////PLOTTING FUNCTION/////////
+//////////////////////////////////
+
 function createBarChart () {
+
 	// Creating SVG for the ranking plot:
 	svg_chart = d3
 	.select("#chart")
@@ -1255,19 +1245,10 @@ function createBarChart () {
 
 	// Filtering the data loaded to keep only the k best (and k worst) country in 1990 and target type.
 	// Note that the "best" ones in 1990 are the ones with the k highest goals.
-	// console.log(data_target);
-	// console.log(year);
 	let data = ranking_reduction();
-	// console.log(data);
 	let topk_countries = data[0];
 	let topk_reduction = data[1];
 	let topk_kyoto_goal = data[2];
-
-
-	// Console log for codding purposes (TODO: Delete them at the end)
-	// console.log(topk_countries)
-	// console.log(topk_kyoto_goal)
-	// console.log(topk_reduction)
 
 	// Changing domain
 	x_Scale.domain([-d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)]),d3.max([d3.max(topk_kyoto_goal), d3.max(topk_reduction)])])
@@ -1291,11 +1272,7 @@ function createBarChart () {
 	node_g_em = svg_chart.append("g").classed("em", true);
 	node_g_flags = svg_chart.append("g").classed("img", true);
 	node_g_mark = svg_chart.append("g").classed("goal", true);
-
 	node_g_legend = svg_chart.append("g").classed("legend", true)
-	// .attr("width", 3.5 * y_Scale.bandwidth())
-	// .attr("height", 5 * y_Scale.bandwidth())
-
 
 	//at this stage, we have <svg>
 	//                             <g class="target" .... </g>
@@ -1462,6 +1439,10 @@ function createBarChart () {
 	.attr("stroke", "black");
 }
 
+//////////////////////////////////
+/////////RANKING FUNCTION/////////
+//////////////////////////////////
+
 function ranking_reduction() {
 	/* 
 	Function reducing the csv loaded before to focus on the year, the type of emission,
@@ -1490,8 +1471,6 @@ function ranking_reduction() {
 
 	else {
 		let data = data_target[target];
-		// console.log(data)
-		// console.log(k)
 		Object.keys(data).sort((a,b) => data[b] - data[a]).forEach((key, ind) =>
 		{
 			if(ind < k | ind >= Object.keys(data).length - k){
@@ -1506,7 +1485,11 @@ function ranking_reduction() {
 	return [topk_countries, topk_reduction, topk_kyoto_goal];
 }
 
-// Function to update the plot when the user changes the parameters thanks to the dropdown button
+//////////////////////////////////
+/////////UPDATE FUNCTION//////////
+//////////////////////////////////
+
+// Function to update the plot when the user changes the parameters
 function updateBarChart() {
             
 	// Update the target depending on the year:
