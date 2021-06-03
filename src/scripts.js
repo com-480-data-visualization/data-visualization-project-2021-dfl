@@ -1342,7 +1342,7 @@ function createBarChart () {
 	})
 	.attr("fill", function(d,i) {
 		if (topk_countries[i] == selected_country) {
-			return "darkblue"
+			return "blue"
 		}
 		if (d >= 0) {
 			return "green"
@@ -1590,7 +1590,7 @@ function updateBarChart() {
 	})
 	.attr("fill", function(d,i) {
 		if (topk_countries[i] == selected_country) {
-			return "darkblue"
+			return "blue"
 		}
 		if (d >= 0) {
 			return "green"
