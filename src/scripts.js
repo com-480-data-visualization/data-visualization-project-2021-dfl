@@ -1003,7 +1003,7 @@ function displayMap() {
 
 	function removeEvenYears() {
 
-		let ticks_to_rm = d3.selectAll(".tick text");
+		let ticks_to_rm = d3.select("#slider-time").selectAll(".tick text");
 	
 		ticks_to_rm.each(function(_,i){
 			if(i%2==0) {
