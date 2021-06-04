@@ -27,7 +27,7 @@
   </head>
   <body>
     <div class="container-fluid">
-      <nav class="navbar navbar-dark bg-primary">
+      <nav class="navbar navbar-dark" style="background-color: #122f57;">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Kyoto Protocol / GHG emissions Tracker</a>
         </div>
@@ -65,20 +65,11 @@
           <div class="map">
             <svg id="legend"></svg>
             <div id="map-cont"></div>
-            <!-- <div>
-              <span id="k1">Phase 1</span>
-              <span id="k2">Phase 2</span>
-            </div> -->
           </div>
         </div>
         <div class="col-6 widget my-auto text-center">
           <svg id="plot">
           </svg>
-          <!-- <div class="bar">
-            <p id="title1">Progress to reach target Phase 1</p>
-            <div class="prog_bar"></div>
-            <p class="current">30%</p>
-          </div> -->
         </div>
       </div>
       <div class="row" >
@@ -103,13 +94,6 @@
       </div>
     </div>
 
-    <!--
-D3.js fails to load in module mode
-<script type="module" src="lib/d3.min.js"></script>
-<script type="module" src="BarChart.js"></script>
- -->
-    <!-- <script src="lib/d3.min.js"></script>
- -->
     <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
