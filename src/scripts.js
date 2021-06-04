@@ -843,7 +843,7 @@ function displayMap() {
 	function switchColors(year){
 		let data = d3.map();
 		d3.queue()
-			.defer(d3.csv, "https://raw.githubusercontent.com/DAL12/Files/master/ghg" + year + ".csv", function(d) { data.set(d.code, +d.emission);})
+			.defer(d3.csv, "https://raw.githubusercontent.com/com-480-data-visualization/data-visualization-project-2021-dfl/master/src/data/emissions/ghg" + year + ".csv", function(d) { data.set(d.code, +d.emission);})
 			.await(ready);
 		
 		function ready(error, topo) {
@@ -894,7 +894,7 @@ function displayMap() {
 		// Load external data and boot
 		d3.queue()
 			.defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-			.defer(d3.csv, "https://raw.githubusercontent.com/DAL12/Files/master/ghg" + year + ".csv", function(d) { data.set(d.code, +d.emission);})
+			.defer(d3.csv, "https://raw.githubusercontent.com/com-480-data-visualization/data-visualization-project-2021-dfl/master/src/data/emissions/ghg" + year + ".csv", function(d) { data.set(d.code, +d.emission);})
 			.await(ready);
 		
 		function ready(error, topo) {
