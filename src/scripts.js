@@ -689,6 +689,10 @@ function loadDataAndDisplayAreaChart() {
 				loadAreaChart(selected_country);
 				displayDynamicText(selected_country);
 				updateBarChart();
+
+				// update dropdown displayed
+				$(".btn:first-child").text($(this).text());
+				$(".btn:first-child").val($(this).text());
 			});
 		}
 }
@@ -923,6 +927,10 @@ function displayMap() {
 					loadAreaChart(selected_country);
 					displayDynamicText(selected_country);
 					updateBarChart();
+
+					// update dropdown menu displayed text
+					$(".btn:first-child").text(selected_country);
+					$(".btn:first-child").val(selected_country);
 				})		
 				.on("mouseover",function(d,i){
 					return tooltip.style("hidden", false).html(d.properties.name);
