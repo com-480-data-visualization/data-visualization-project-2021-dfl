@@ -25,7 +25,7 @@
 - [Process book](milestones/Milestone3.pdf)
 - [Video](https://www.youtube.com/watch?v=vla4OJxy5Pk)
 
-### Instalation
+### Installation
 
 Our website is available at [GithubPages](https://com-480-data-visualization.github.io/data-visualization-project-2021-dfl/).
 
