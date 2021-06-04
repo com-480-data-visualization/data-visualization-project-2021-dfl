@@ -706,8 +706,14 @@ function displayDynamicText(country) {
 	let ghg_1990, ghg_2012, ghg_2018;
 
 	if (!(country in dataByGas)) {
-		$("#dyn-text").last().html("Sorry, emissions data for <b>" + country + "</b> is not available.");
+		$("#dyn-text").last().html("Sorry, emissions data for <b>" + country + "</b> is not available. <br> Please select another country.");
+		$("#dyn-text")
+			.removeClass( "alert-secondary" )
+			.addClass( "alert-danger" )
 	} else {
+		$("#dyn-text")
+			.removeClass( "alert-danger" )
+			.addClass("alert-secondary")
 		$("#dyn-text").last().html(`
 			According to the Kyoto protocol, 
 			<span class="dynamic_text" id="s1">_____</span> 
@@ -933,9 +939,11 @@ function displayMap() {
 					displayDynamicText(selected_country);
 					updateBarChart();
 
-					// update dropdown menu displayed text
-					$(".btn:first-child").text(selected_country);
-					$(".btn:first-child").val(selected_country);
+					if (selected_country in dataByGas) {
+						// update dropdown menu displayed text
+						$(".btn:first-child").text(selected_country);
+						$(".btn:first-child").val(selected_country);
+					}
 				})		
 				.on("mouseover",function(d,i){
 					return tooltip.style("hidden", false).html(d.properties.name);
