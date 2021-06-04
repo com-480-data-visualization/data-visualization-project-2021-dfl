@@ -35,10 +35,10 @@ To run it locally, start an HTTP server by using:
 
 ### Repository structure
 
-- data: constains all the datasets that we use
-- src: code of the website
-- milestones: reports for each milestone
-- images: images used in the reports
+- `data`: constains all the datasets that we use
+- `src`: code of the website
+- `milestones`: reports for each milestone
+- `images`: images used in the reports
 
 ### Usage
 
@@ -48,7 +48,7 @@ The map shows the value of total GHG emissions for each country for each year. Y
 
 #### Area Chart
 
-The stacked area chart shows the emissions over the time period for each gas (CO2, CH4 and M2O), including total emissions, per country. The different gases can be highlighted by hovering over the legend. The panel on the bottom allows you to brush, so that you can select some period of time that you might want to see in more detail. The country showed can be switched by clicking on the map or choosing a country from the dropdown menu above the plot. The vertical lines indicate when each phase of the agreement started and/or ended.
+The stacked area chart shows the emissions over the time period for each gas (CO2, CH4 and N2O), including total emissions, per country. The different gases can be highlighted by hovering over the legend. The panel on the bottom allows you to brush, so that you can select some period of time that you might want to see in more detail. The country showed can be switched by clicking on the map or choosing a country from the dropdown menu above the plot. The vertical lines indicate when each phase of the agreement started and/or ended.
 
 #### Ranking Bar Chart
 
