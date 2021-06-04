@@ -422,8 +422,6 @@ function loadAreaChart(country) {
 		// creates a new Area Chart
 		d3.selectAll("#plot > *").remove();
 
-		console.log("width: ", width + areaChartMargin.left + areaChartMargin.right);
-
 		svg = d3.select('#' + svg_element_id)
 			.attr("width", width + areaChartMargin.left + areaChartMargin.right)
 			.attr("height", height + areaChartMargin.top + areaChartMargin.bottom)
@@ -583,10 +581,10 @@ function loadAreaChart(country) {
 }
 
 
-function lodaDataAndDisplayAreaChart() {
+function loadDataAndDisplayAreaChart() {
 
 	///////////////////////////////////////////////////////////
-	//////////	LOAD AND PREAPRE DATA FOR AREA CHART ////////// 
+	//////////	LOAD AND PREPARE DATA FOR AREA CHART ////////// 
 	///////////////////////////////////////////////////////////  
 
 	// load and prepare the data here
@@ -665,7 +663,7 @@ function lodaDataAndDisplayAreaChart() {
 		// Function executed after data has been loaded:
 		function ready(error) {
 			if (error) throw error;
-			console.log("dataByGas: ", dataByGas);
+
 			let countries = getAllCountries(dataByGas);
 			let select = document.getElementById("countryDropdown"); 
 	
@@ -1653,7 +1651,7 @@ function whenDocumentLoaded(action) {
 whenDocumentLoaded(() => {
 	displayMap();
 	mapProgressBar();
-	lodaDataAndDisplayAreaChart();
+	loadDataAndDisplayAreaChart();
 	displayBarChart();
 });
 
