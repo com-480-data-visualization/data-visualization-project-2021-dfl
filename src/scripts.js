@@ -597,67 +597,72 @@ function loadDataAndDisplayAreaChart() {
 				}		
 			}
 		})
-		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CO₂ total without LULUCF, in kt.csv", function(row) {
-			dataByGas[row.Party]["CO2"]= [];
-			for (const key in row) {
-				if(key != "Party") {
-					dataByGas[row.Party]["CO2"].push(row[key]);
-				}		
-			}
+		.await(function(error) {
+			// make sure the 1st CSV is loaded and that	dataByGas[row.Party] is created before load more CSVs
+			if (error) throw error;
+			d3.queue()
+			.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CO₂ total without LULUCF, in kt.csv", function(row) {
+				dataByGas[row.Party]["CO2"]= [];
+				for (const key in row) {
+					if(key != "Party") {
+						dataByGas[row.Party]["CO2"].push(row[key]);
+					}		
+				}
+			})
+			.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CH₄ total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
+				dataByGas[row.Party]["CH4_LULU"]= [];
+				for (const key in row) {
+					if(key != "Party") {
+						dataByGas[row.Party]["CH4_LULU"].push(row[key]);
+					}		
+				}
+			})
+			.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CH₄ total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
+				dataByGas[row.Party]["CH4"]= [];
+				for (const key in row) {
+					if(key != "Party") {
+						dataByGas[row.Party]["CH4"].push(row[key]);
+					}		
+				}
+			})
+			.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - N₂O total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
+				dataByGas[row.Party]["N2O_LULU"]= [];
+				for (const key in row) {
+					if(key != "Party") {
+						dataByGas[row.Party]["N2O_LULU"].push(row[key]);
+					}		
+				}
+			})
+			.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - N₂O total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
+				dataByGas[row.Party]["N2O"]= [];
+				for (const key in row) {
+					if(key != "Party") {
+						dataByGas[row.Party]["N2O"].push(row[key]);
+					}		
+				}
+			})
+			.defer(d3.csv, PATH + "/unfcc/time_series/data_for_greenhouse_gas_total/Time Series - GHG total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
+				dataByGas[row.Party]["TOTAL_LULU"]= [];
+				for (const key in row) {
+					if(key != "Party") {
+						dataByGas[row.Party]["TOTAL_LULU"].push(row[key]);
+					}		
+				}
+			})
+			.defer(d3.csv, PATH + "/unfcc/time_series/data_for_greenhouse_gas_total/Time Series - GHG total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
+				dataByGas[row.Party]["TOTAL"]= [];
+				for (const key in row) {
+					if(key != "Party") {
+						dataByGas[row.Party]["TOTAL"].push(row[key]);
+					}		
+				}
+			})
+			.defer(d3.csv, PATH + "/country_codes.csv", function(row) {
+				// ISO 3166-1 alpha-3 codes data from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+				countryCodeName[row.Code] = row.Name;
+			})
+			.await(ready); // Once the loading is over, we enter the ready function that takes care of the plotting
 		})
-		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CH₄ total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
-			dataByGas[row.Party]["CH4_LULU"]= [];
-			for (const key in row) {
-				if(key != "Party") {
-					dataByGas[row.Party]["CH4_LULU"].push(row[key]);
-				}		
-			}
-		})
-		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - CH₄ total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
-			dataByGas[row.Party]["CH4"]= [];
-			for (const key in row) {
-				if(key != "Party") {
-					dataByGas[row.Party]["CH4"].push(row[key]);
-				}		
-			}
-		})
-		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - N₂O total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
-			dataByGas[row.Party]["N2O_LULU"]= [];
-			for (const key in row) {
-				if(key != "Party") {
-					dataByGas[row.Party]["N2O_LULU"].push(row[key]);
-				}		
-			}
-		})
-		.defer(d3.csv, PATH + "/unfcc/time_series/data_by_gas/Time Series - N₂O total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
-			dataByGas[row.Party]["N2O"]= [];
-			for (const key in row) {
-				if(key != "Party") {
-					dataByGas[row.Party]["N2O"].push(row[key]);
-				}		
-			}
-		})
-		.defer(d3.csv, PATH + "/unfcc/time_series/data_for_greenhouse_gas_total/Time Series - GHG total with LULUCF, in kt CO₂ equivalent.csv", function(row) {
-			dataByGas[row.Party]["TOTAL_LULU"]= [];
-			for (const key in row) {
-				if(key != "Party") {
-					dataByGas[row.Party]["TOTAL_LULU"].push(row[key]);
-				}		
-			}
-		})
-		.defer(d3.csv, PATH + "/unfcc/time_series/data_for_greenhouse_gas_total/Time Series - GHG total without LULUCF, in kt CO₂ equivalent.csv", function(row) {
-			dataByGas[row.Party]["TOTAL"]= [];
-			for (const key in row) {
-				if(key != "Party") {
-					dataByGas[row.Party]["TOTAL"].push(row[key]);
-				}		
-			}
-		})
-		.defer(d3.csv, PATH + "/country_codes.csv", function(row) {
-			// ISO 3166-1 alpha-3 codes data from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
-			countryCodeName[row.Code] = row.Name;
-		})
-		.await(ready); // Once the loading is over, we enter the ready function that takes care of the plotting
 	
 	
 		// Function executed after data has been loaded:
@@ -690,7 +695,7 @@ function loadDataAndDisplayAreaChart() {
 				displayDynamicText(selected_country);
 				updateBarChart();
 
-				// update dropdown displayed
+				// update dropdown displayed text
 				$(".btn:first-child").text($(this).text());
 				$(".btn:first-child").val($(this).text());
 			});
