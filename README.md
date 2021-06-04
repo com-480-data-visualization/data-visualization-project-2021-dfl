@@ -54,18 +54,3 @@ The area plot shows the emissions over the time period of each gas (CO2, CH4 and
 
 The ranking plot allows us to see which countries performed better than others in each year. You can select the year using the time slider. By performing better, we mean reducing the most the emissions of GHG. The red lines show the Kyoto protocol target and how far the countries results are from reaching them or how much they surpassed them.
 
-
-
-
-
-
-
-
-
-
-
-## Late policy
-
-- < 24h: 80% of the grade for the milestone
-- < 48h: 70% of the grade for the milestone
-
